@@ -11,9 +11,10 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
-      }}>
+        tabBarStyle: { backgroundColor: Colors.dark.tint },
+        tabBarActiveTintColor: Colors.dark.text ,
+    }}>
       <Tabs.Screen
         name="index"
         options={{
@@ -24,11 +25,38 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="statistics"
         options={{
-          title: 'Explore',
+          title: 'Statistics',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
+            <TabBarIcon name={focused ? 'stats-chart' : 'stats-chart-outline'} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="update"
+        options={{
+          title: 'Update',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'add' : 'add-outline'} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="reminders"
+        options={{
+          title: 'Reminders',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'notifications' : 'notifications-outline'} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Profile',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'person' : 'person-outline'} color={color} />
           ),
         }}
       />
