@@ -34,8 +34,8 @@ export const DefaultTheme: CustomTheme = {
   colors: {
     ...NavigationDefaultTheme.colors,
     primary: '#2E7D4B',
-    background: '#FFFFFF',
-    card: '#F2F2F2',
+    background: '#F2F2F2',
+    card: '#FFFFFF',
     text: '#3C3C3C',
     textSecondary: '#000000',
     border: '#DADADA',

@@ -4,10 +4,10 @@ import React from 'react'
 import { StyleSheet } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-const Update = () => {
+const Upgrade = () => {
   return (
     <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Update!</ThemedText>
+        <ThemedText type="title">Upgrade!</ThemedText>
     </ThemedView> 
   )
 }
@@ -31,4 +31,4 @@ const styles = StyleSheet.create({
     },
   });
 
-export default Update;
+export default Upgrade;

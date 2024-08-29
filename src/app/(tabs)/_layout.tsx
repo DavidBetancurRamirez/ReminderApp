@@ -1,18 +1,19 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
 
-import { TabBarIcon } from '@/src/components/navigation/TabBarIcon';
+import { TabBarIcon, TabBarUpgrade } from '@/src/components/navigation/TabBarIcon';
 import { useThemeColor } from '@/src/hooks/useThemeColor';
 
 const TabLayout = () => {
   const backgroundColor = useThemeColor("primary");
+  const tint = useThemeColor("text");
 
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
         tabBarStyle: { backgroundColor },
-        tabBarActiveTintColor: "#f2f2f2",
+        tabBarActiveTintColor: tint
     }}>
       <Tabs.Screen
         name="index"
@@ -33,11 +34,15 @@ const TabLayout = () => {
         }}
       />
       <Tabs.Screen
-        name="update"
+        name="upgrade"
         options={{
-          title: 'Update',
+          title:"",
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'add' : 'add-outline'} color={color} />
+            <TabBarUpgrade 
+              name={focused ? 'add' : 'add-outline'} 
+              color={color}
+              backgroundColor={backgroundColor}
+            />
           ),
         }}
       />

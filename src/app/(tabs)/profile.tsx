@@ -1,28 +1,22 @@
 import { ThemedText } from '@/src/components/ThemedText';
 import { ThemedView } from '@/src/components/ThemedView';
 import ThemeToggleButton from '@/src/components/ThemeToggleButton';
-import { useTheme } from '@/src/context/ThemeContext';
 import React from 'react'
-import { StyleSheet} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { StyleSheet } from 'react-native';
 
-const Profile = () => {
-  const { theme } = useTheme();
-  
+const Profile = () => {  
   return (
-      <ThemedView style={styles.titleContainer}>
-          <ThemedText type="title">Profile!</ThemedText>
-          <ThemedView>
-            <ThemeToggleButton />
-            <ThemedText type="title">{theme}</ThemedText>
-          </ThemedView>
-      </ThemedView>
+    <ThemedView style={styles.titleContainer}>
+      <ThemedText type="title">Profile!</ThemedText>
+      <ThemeToggleButton />
+    </ThemedView>
   )
 }
 
 const styles = StyleSheet.create({
     titleContainer: {
       flexDirection: 'row',
+      justifyContent: "space-between",
       alignItems: 'center',
       gap: 8,
     },
