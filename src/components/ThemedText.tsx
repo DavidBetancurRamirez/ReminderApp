@@ -1,17 +1,20 @@
 import { Text, type TextProps, StyleSheet } from 'react-native';
 
 import { useThemeColor } from '@/src/hooks/useThemeColor';
+import { CustomTheme } from '../constants/themes';
 
 export type ThemedTextProps = TextProps & {
   type?: 'default' | 'title' | 'defaultSemiBold' | 'subtitle' | 'link';
+  textColor?: keyof CustomTheme['colors'];
 };
 
 export function ThemedText({
   style,
   type = 'default',
+  textColor = 'text',
   ...rest
 }: ThemedTextProps) {
-  const color = useThemeColor('text');
+  const color = useThemeColor(textColor);
 
   return (
     <Text

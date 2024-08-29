@@ -5,8 +5,8 @@ import { ThemedView } from '@/src/components/ThemedView';
 
 const Statistics = () => {
   return (
-    <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Statistics!</ThemedText>
+    <ThemedView style={styles.titleContainer} background='card'>
+        <ThemedText type="title" textColor='notification'>Statistics!</ThemedText>
     </ThemedView> 
   )
 }

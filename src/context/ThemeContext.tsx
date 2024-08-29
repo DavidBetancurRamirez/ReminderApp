@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { View } from 'react-native';
 
 // Define los tipos para el contexto de tema
 export type Theme = 'dark' | 'light';
