@@ -1,12 +1,12 @@
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { ThemedText } from '@/src/components/ThemedText';
+import { ThemedView } from '@/src/components/ThemedView';
 import React from 'react'
 import { StyleSheet } from 'react-native';
 
-const Update = () => {
+const Reminders = () => {
   return (
     <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Update!</ThemedText>
+        <ThemedText type="title">Reminders!</ThemedText>
     </ThemedView> 
   )
 }
@@ -30,4 +30,4 @@ const styles = StyleSheet.create({
     },
   });
 
-export default Update;
+export default Reminders;
