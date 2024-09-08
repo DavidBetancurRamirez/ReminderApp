@@ -5,6 +5,17 @@ import { type IconProps } from '@expo/vector-icons/build/createIconSet';
 import { type ComponentProps } from 'react';
 import { StyleSheet, View } from 'react-native';
 
+interface IIcon extends IconProps<ComponentProps<typeof Ionicons>['name']> {
+  backgroundColor: string;
+  size: number;
+}
+// Icono Reutilizable
+export const Icon = ({ style, size=20, ...rest }: IIcon) => {
+  return <Ionicons size={size} style={style} {...rest} />;
+}
+
+
+// Icono de TabBar default
 export const TabBarIcon = ({ style, ...rest }: IconProps<ComponentProps<typeof Ionicons>['name']>) => {
   return <Ionicons size={20} style={[{ marginBottom: -3 }, style]} {...rest} />;
 }
@@ -13,7 +24,7 @@ export const TabBarIcon = ({ style, ...rest }: IconProps<ComponentProps<typeof I
 interface TabBarUpgradeProps extends IconProps<ComponentProps<typeof Ionicons>['name']> {
   backgroundColor: string;
 }
-
+// Icono de TabBar Upgrade
 export const TabBarUpgrade = ({ style, backgroundColor, ...rest }: TabBarUpgradeProps) => {
   return (
     <View style={[styles.upgradeButtonContainer, { backgroundColor }]}>
