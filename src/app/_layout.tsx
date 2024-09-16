@@ -8,7 +8,7 @@ import { StatusBar } from 'react-native';
 
 import { ThemeProvider, useTheme } from '../context/ThemeContext';
 import { NavigationContainer } from '@react-navigation/native';
-import { DarkTheme, DefaultTheme } from '../constants/themes';
+import { DarkTheme, LightTheme } from '../constants/themes';
 import { useThemeColor } from '../hooks/useThemeColor';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -38,7 +38,7 @@ export default function App() {
 
 const Container = () => {
   const { theme } = useTheme();
-  const navigationTheme = theme === 'dark' ? DarkTheme : DefaultTheme;
+  const navigationTheme = theme === 'dark' ? DarkTheme : LightTheme;
   const background = useThemeColor("background")
 
   useEffect(() => {

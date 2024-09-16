@@ -13,7 +13,7 @@ const TabLayout = () => {
       screenOptions={{
         headerShown: false,
         tabBarStyle: { backgroundColor },
-        tabBarActiveTintColor: tint
+        tabBarActiveTintColor: tint,
     }}>
       <Tabs.Screen
         name="index"

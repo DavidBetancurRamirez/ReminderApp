@@ -29,7 +29,7 @@ export const DarkTheme: CustomTheme = {
   },
 };
 
-export const DefaultTheme: CustomTheme = {
+export const LightTheme: CustomTheme = {
   ...NavigationDefaultTheme,
   colors: {
     ...NavigationDefaultTheme.colors,
