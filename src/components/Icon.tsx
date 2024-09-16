@@ -6,7 +6,6 @@ import { type ComponentProps } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 interface IIcon extends IconProps<ComponentProps<typeof Ionicons>['name']> {
-  backgroundColor: string;
   size: number;
 }
 // Icono Reutilizable
