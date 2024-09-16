@@ -1,11 +1,20 @@
 import { ThemedText } from '@/src/components/ThemedText';
 import { ThemedView } from '@/src/components/ThemedView';
 import React from 'react'
-import { StyleSheet } from 'react-native';
+import { StyleSheet, ScrollView } from 'react-native';
+import ReminderItem from '@/src/components/RemindersItem';
 
 const Reminders = () => {
   return (
     <ThemedView style={styles.titleContainer}>
+       <ScrollView>
+            <ReminderItem reminderTitle="Fertilize" reminderDate="Today" reminderGroup="Crop" />
+            <ReminderItem reminderTitle="Fertilize" reminderDate="Today" />
+            <ReminderItem reminderTitle="Fertilize" reminderDate="Today" />
+            <ReminderItem reminderTitle="Fertilize" reminderDate="Today" />
+            <ReminderItem reminderTitle="Fertilize" reminderDate="Today" />
+            <ReminderItem reminderTitle="Fertilize" reminderDate="Today" />
+        </ScrollView>
         <ThemedText type="title">Reminders!</ThemedText>
     </ThemedView> 
   )
