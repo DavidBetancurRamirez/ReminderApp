@@ -1,7 +1,7 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
 
-import { TabBarIcon, TabBarUpgrade } from '@/src/components/Icon';
+import { Icon, TabBarUpgrade } from '@/src/components/Icon';
 import { useThemeColor } from '@/src/hooks/useThemeColor';
 
 const TabLayout = () => {
@@ -13,14 +13,14 @@ const TabLayout = () => {
       screenOptions={{
         headerShown: false,
         tabBarStyle: { backgroundColor },
-        tabBarActiveTintColor: tint
+        tabBarActiveTintColor: tint,
     }}>
       <Tabs.Screen
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
+          tabBarIcon: ({ focused }) => (
+            <Icon name={focused ? 'home' : 'home-outline'} />
           ),
         }}
       />
@@ -28,8 +28,8 @@ const TabLayout = () => {
         name="statistics"
         options={{
           title: 'Statistics',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'stats-chart' : 'stats-chart-outline'} color={color} />
+          tabBarIcon: ({ focused }) => (
+            <Icon name={focused ? 'stats-chart' : 'stats-chart-outline'} />
           ),
         }}
       />
@@ -37,10 +37,9 @@ const TabLayout = () => {
         name="upgrade"
         options={{
           title:"",
-          tabBarIcon: ({ color, focused }) => (
+          tabBarIcon: ({ focused }) => (
             <TabBarUpgrade 
-              name={focused ? 'add' : 'add-outline'} 
-              color={color}
+              name={focused ? 'add' : 'add-outline'}
               backgroundColor={backgroundColor}
             />
           ),
@@ -50,8 +49,8 @@ const TabLayout = () => {
         name="reminders"
         options={{
           title: 'Reminders',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'notifications' : 'notifications-outline'} color={color} />
+          tabBarIcon: ({ focused }) => (
+            <Icon name={focused ? 'notifications' : 'notifications-outline'} />
           ),
         }}
       />
@@ -59,8 +58,8 @@ const TabLayout = () => {
         name="profile"
         options={{
           title: 'Profile',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'person' : 'person-outline'} color={color} />
+          tabBarIcon: ({ focused }) => (
+            <Icon name={focused ? 'person' : 'person-outline'} />
           ),
         }}
       />

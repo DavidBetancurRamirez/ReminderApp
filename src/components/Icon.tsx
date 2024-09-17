@@ -4,30 +4,40 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { type IconProps } from '@expo/vector-icons/build/createIconSet';
 import { type ComponentProps } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { CustomTheme } from '../constants/themes';
+import { useThemeColor } from '../hooks/useThemeColor';
 
 interface IIcon extends IconProps<ComponentProps<typeof Ionicons>['name']> {
-  size: number;
+  type?: "default" | "tabBar";
+  color?: keyof CustomTheme['colors'];
+  size?: number;
 }
+
 // Icono Reutilizable
-export const Icon = ({ style, size=20, ...rest }: IIcon) => {
-  return <Ionicons size={size} style={style} {...rest} />;
+export const Icon = ({ style, type="default", color="text", size=20, ...rest }: IIcon) => {
+  return (
+    <Ionicons 
+      size={size} 
+      color={useThemeColor(color)} 
+      style={[
+        type=="tabBar" ? { marginBottom: -3 } : {}, 
+        style
+      ]} 
+      {...rest} 
+    />
+  )
 }
 
 
-// Icono de TabBar default
-export const TabBarIcon = ({ style, ...rest }: IconProps<ComponentProps<typeof Ionicons>['name']>) => {
-  return <Ionicons size={20} style={[{ marginBottom: -3 }, style]} {...rest} />;
+interface TabBarUpgradeProps extends IIcon {
+  backgroundColor?: string;
 }
 
-
-interface TabBarUpgradeProps extends IconProps<ComponentProps<typeof Ionicons>['name']> {
-  backgroundColor: string;
-}
-// Icono de TabBar Upgrade
-export const TabBarUpgrade = ({ style, backgroundColor, ...rest }: TabBarUpgradeProps) => {
+// TabBar Upgrade Icon
+export const TabBarUpgrade = ({ style, type="default", color="text", size=20, backgroundColor, ...rest }: TabBarUpgradeProps) => {
   return (
     <View style={[styles.upgradeButtonContainer, { backgroundColor }]}>
-      <Ionicons size={20} style={style} {...rest} />
+      <Icon color={color} size={size} style={style} {...rest} />
     </View>
   )
 }
