@@ -3,6 +3,7 @@ import React from 'react';
 
 import { Icon, TabBarUpgrade } from '@/src/components/Icon';
 import { useThemeColor } from '@/src/hooks/useThemeColor';
+import UpgradeStack from './upgrade';
 
 const TabLayout = () => {
   const backgroundColor = useThemeColor("primary");
@@ -36,7 +37,7 @@ const TabLayout = () => {
       <Tabs.Screen
         name="upgrade"
         options={{
-          title:"",
+          title: "",
           tabBarIcon: ({ focused }) => (
             <TabBarUpgrade 
               name={focused ? 'add' : 'add-outline'}
