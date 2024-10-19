@@ -4,8 +4,9 @@ import { ThemedView } from '@/src/components/ThemedView';
 import { StyleSheet } from 'react-native';
 import Card from '@/src/components/Card';
 import { Icon } from './Icon';
+import { dateName } from '../utils/date.utils';
 
-interface ReminderProps {
+export interface ReminderProps {
   name: string;
   date: string;
   hour: string;
@@ -20,7 +21,7 @@ const Reminder = ({ name, date, hour, group }: ReminderProps) => {
       <ThemedView background='card' style={styles.infoContainer}>
         <ThemedText style={styles.title}>{name}</ThemedText>
         <ThemedText style={styles.info}>
-            {formatDate(date)} | {hour}
+            {dateName(date)} | {hour}
         </ThemedText>
       </ThemedView>
 
@@ -28,23 +29,6 @@ const Reminder = ({ name, date, hour, group }: ReminderProps) => {
     </Card>
   )
 }
-
-const formatDate = (dateString: string) => {
-  const today = new Date();
-  const date = new Date(dateString);
-
-  // Ajustar la hora a medianoche para comparar solo fechas
-  today.setHours(0, 0, 0, 0);
-  date.setHours(0, 0, 0, 0);
-
-  const diffTime = date.getTime() - today.getTime();
-  const diffDays = diffTime / (1000 * 60 * 60 * 24);
-
-  if (diffDays === -1) return 'Today';
-  else if (diffDays === -2) return 'Yesterday';
-  else if (diffDays === 0) return 'Tomorrow';
-  else return dateString;
-};
 
 const styles = StyleSheet.create({
     icon: {
