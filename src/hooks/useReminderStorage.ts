@@ -97,31 +97,10 @@ const useReminderStorage = () => {
     }
   }
 
-  
-
-  const deleteAll = async (): Promise<void> => {
-    try {
-      const key = getKey();
-      const reminders = await handleGetReminders();
-
-      const filteredItem: ReminderType[] = []
-
-      await AsyncStorage.setItem(
-        key,
-        JSON.stringify(filteredItem),
-      )
-
-      return Promise.resolve()
-    } catch (error) {
-      return Promise.reject(error);      
-    }
-  }
-
   return {
     onGetReminders: handleGetReminders,
     onSaveReminder: handleSaveReminder,
     onRemoveReminder: handleRemoveReminder,
-    deleteAll, // TODO
   }
 };
 
