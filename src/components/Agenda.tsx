@@ -2,28 +2,35 @@ import React, { useCallback, useState } from 'react';
 import { ExpandableCalendar, CalendarProvider, AgendaList } from 'react-native-calendars';
 import Reminder from './Reminder';
 import { useThemeColor } from '../hooks/useThemeColor';
-import ITEMS from '@/src/data/reminders'
 import { StyleSheet } from 'react-native';
-
-interface AgendaItem {
-  name: string;
-  hour: string;
-  group?: string;
-}
-
-interface AgendaData {
-  title: string;
-  data: AgendaItem[];
-}
-
-interface PropsAgendaItem {
-  item: AgendaItem;
-  date: string;
-}
+import useReminderStorage from '../hooks/useReminderStorage';
+import { ReminderAgendaType, ReminderType } from '../types/Reminder.type';
+import { useFocusEffect } from 'expo-router';
+import { groupRemindersByDate } from '../utils/groupRemindersByDate.util';
 
 const Agenda = () => {
   const today = new Date().toISOString().split('T')[0];
   const [selectedDate, setSelectedDate] = useState(today);
+  const [reminders, setReminders] = useState<ReminderAgendaType[]>([]);
+
+  const { onGetReminders } = useReminderStorage();  
+
+  const loadReminders = useCallback(async () => {
+    try {
+      const remindersResponse = await onGetReminders();
+      const remindersGrouped = groupRemindersByDate(remindersResponse);
+      setReminders(remindersGrouped);
+    } catch (error) {
+      setReminders([]);
+      console.error(error);
+    }
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      loadReminders().catch(null);
+    }, [loadReminders])
+  );
 
   // Colors
   const backgroundColor = useThemeColor("background");
@@ -35,10 +42,6 @@ const Agenda = () => {
   const onDateChanged = useCallback((date: any) => {
     setSelectedDate(date);
   }, []);
-
-  const renderItem = useCallback(({item, date}: PropsAgendaItem) => (
-    <Reminder name={item.name} date={date} hour={item.hour} />
-  ), []);
 
   return (
     <CalendarProvider 
@@ -65,10 +68,15 @@ const Agenda = () => {
         }}
       />
       <AgendaList
-        sections={ITEMS}
-        renderItem={({ item, section }) => renderItem({ item, date: section.title})}
+        sections={reminders}
+        renderItem={({ item, section }) => (
+          <Reminder 
+            {...item}
+            date={section.title}
+          />
+        )}
         sectionStyle={styles.section}
-        keyExtractor={(item, index) => item.name + index}
+        keyExtractor={(item) => item.id}
       />
     </CalendarProvider>
   );

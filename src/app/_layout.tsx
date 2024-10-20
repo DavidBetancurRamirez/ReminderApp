@@ -1,16 +1,16 @@
+import * as SplashScreen from 'expo-splash-screen';
 import React, { useEffect } from 'react';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
 import 'react-native-reanimated';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { NavigationContainer } from '@react-navigation/native';
 
 import { ThemeProvider, useTheme } from '../context/ThemeContext';
-import { NavigationContainer } from '@react-navigation/native';
 import { DarkTheme, LightTheme } from '../constants/themes';
 import { useThemeColor } from '../hooks/useThemeColor';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -30,11 +30,13 @@ export default function App() {
 
   return (
     <ThemeProvider>
-      <SafeAreaView style={{flex:1}}>
-        <GestureHandlerRootView style={{ flex: 1 }}>
-          <Container />
-        </GestureHandlerRootView>
-      </SafeAreaView>
+      <SafeAreaProvider>
+        <SafeAreaView style={{flex:1}}>
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <Container />
+          </GestureHandlerRootView>
+        </SafeAreaView>
+      </SafeAreaProvider>
     </ThemeProvider>
   );
 }

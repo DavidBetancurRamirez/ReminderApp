@@ -4,46 +4,52 @@ import { ThemedView } from '@/src/components/ThemedView';
 import { StyleSheet } from 'react-native';
 import Card from '@/src/components/Card';
 import { Icon } from './Icon';
-import { dateName } from '../utils/date.utils';
+import { dateName } from '../utils/date.util';
+import { ReminderProps } from '../types/Reminder.type';
 
-export interface ReminderProps {
-  name: string;
-  date: string;
-  hour: string;
-  group?: string;
-}
-
-const Reminder = ({ name, date, hour, group }: ReminderProps) => {
+const Reminder = (reminder: ReminderProps) => {
   return (
     <Card>
-      <Icon name="notifications" size={30} style={styles.icon} />
+      <Icon name="notifications" size={30} />
 
       <ThemedView background='card' style={styles.infoContainer}>
-        <ThemedText style={styles.title}>{name}</ThemedText>
-        <ThemedText style={styles.info}>
-            {dateName(date)} | {hour}
+        
+        <ThemedText style={styles.title}>{reminder.name}</ThemedText>
+
+        <ThemedText style={styles.group}>
+          {dateName(reminder.date)}
+          {reminder.group && " | " + reminder.group}
         </ThemedText>
+
+        <ThemedText style={styles.info}>
+          {reminder.allDay 
+            ? "All Day" 
+            : reminder.startTime + " - " + reminder.endTime
+          }
+        </ThemedText>
+
       </ThemedView>
 
-      <Icon name="chevron-forward-outline" size={30} style={styles.icon} />
+      <Icon name="chevron-forward-outline" size={30} />
     </Card>
   )
 }
 
 const styles = StyleSheet.create({
-    icon: {
-      margin: 10,
-    },
-    infoContainer: {
-      flex: 1,
-    },
-    title: {
-      fontSize: 18,
-      fontWeight: 'bold',
-    },
-    info: {
-      fontWeight: '100',
-    },
-  });
+  infoContainer: {
+    flex: 1,
+    marginHorizontal: 10,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: '500',
+  },
+  group: {
+    fontWeight: "300",
+  },
+  info: {
+    fontWeight: '100',
+  },
+});
 
 export default Reminder;

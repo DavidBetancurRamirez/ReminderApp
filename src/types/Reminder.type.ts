@@ -1,9 +1,21 @@
-export type ReminderType = {
-  id: string;
+export type BaseReminderProps = {
   name: string;
   date: string;
-  hour: string;
   group?: string;
+};
+
+export type ReminderProps = 
+  | BaseReminderProps & { 
+    allDay: true 
+  }
+  | (BaseReminderProps & { 
+    allDay: false; 
+    startTime: string; 
+    endTime: string 
+  });
+
+export type ReminderType = ReminderProps & {
+  id: string | number[];
 }
 
 export type ReminderAgendaType = {

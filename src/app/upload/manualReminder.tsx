@@ -1,3 +1,6 @@
+import useReminderStorage from '@/src/hooks/useReminderStorage';
+import { ReminderProps } from '@/src/types/Reminder.type';
+import { formatDate } from '@/src/utils/date.util';
 import React, { useState } from 'react';
 import { View, Text, TextInput, Switch, Button, StyleSheet } from 'react-native';
 
@@ -7,6 +10,40 @@ const ManualReminderScreen = () => {
   const [isAllDay, setIsAllDay] = useState(false);
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
+  const [date, setDate] = useState(new Date());
+  const [group, setGroup] = useState("");
+
+  const { onSaveReminder } = useReminderStorage();
+
+  const handleSave = async () => {
+    try {
+      const data: ReminderProps = createReminderData();
+  
+      await onSaveReminder(data);
+  
+      console.log("Saved");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const createReminderData = (): ReminderProps => {
+    return isAllDay
+      ? {
+        name: title,
+        date: formatDate(date),
+        allDay: true,
+        group,
+      }
+      : {
+        name: title,
+        date: formatDate(date),
+        allDay: false,
+        startTime: startTime,
+        endTime: endTime,
+        group,
+      };
+  };
 
   return (
     <View style={styles.container}>
@@ -57,7 +94,7 @@ const ManualReminderScreen = () => {
         </>
       )}
 
-      <Button title="Save Reminder" onPress={() => {/* Handle save */}} />
+      <Button title="Save Reminder" onPress={handleSave} />
     </View>
   );
 };

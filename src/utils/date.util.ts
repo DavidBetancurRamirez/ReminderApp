@@ -1,7 +1,9 @@
-import { differenceInDays, format } from "date-fns";
+import { differenceInDays, format, parse } from "date-fns";
+
+const baseFormat = "yyyy-MM-dd";
 
 export const formatDate = (date: Date) => {
-  return format(date, "yyyy/dd/MM");
+  return format(date, baseFormat);
 }
 
 export const startOfDay = (date: Date | string) => {
@@ -11,8 +13,8 @@ export const startOfDay = (date: Date | string) => {
 };
 
 export const dateName = (dateString: string) => {
+  const date = parse(dateString, baseFormat, new Date());
   const today = startOfDay(new Date());
-  const date = startOfDay(new Date(dateString));
 
   const diffDays = differenceInDays(
     date,

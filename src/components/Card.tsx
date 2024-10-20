@@ -1,30 +1,51 @@
-import React, { PropsWithChildren } from 'react'
+import React, { PropsWithChildren, useRef } from 'react'
 import { ThemedView } from './ThemedView'
-import { Pressable } from 'react-native';
+import { Pressable, Animated, Text, StyleSheet } from 'react-native';
 
-type Props = PropsWithChildren<{}>;
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-const Card = ({ children }: Props) => {
+const Card = ({ children }: PropsWithChildren<{}>) => {
+  const scale = useRef(new Animated.Value(1)).current;
+
+  const onPressIn = () => {
+    Animated.spring(scale, {
+      toValue: 0.95,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const onPressOut = () => {
+    Animated.spring(scale, {
+      toValue: 1,
+      useNativeDriver: true,
+    }).start();
+  };
+
   return (
-    <Pressable
-      style={({ pressed }) => ({
-          opacity: pressed ? 0.6 : 1,  // Cambia la opacidad al ser presionado
-      })}
+    <AnimatedPressable
+      onPressIn={onPressIn}
+      onPressOut={onPressOut}
+      style={{ transform: [{ scale }] }}
     >
       <ThemedView 
         background={"card"} 
-        style={{
-          justifyContent: "space-between",
-          flexDirection: 'row',
-          alignItems: "center",
-          borderRadius: 10,
-          margin: 10
-        }}
+        style={styles.card}
       >
-          { children }
+        { children }
       </ThemedView>
-    </Pressable>
+    </AnimatedPressable>
   )
-}
+};
+
+const styles = StyleSheet.create({
+  card: {
+    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignItems: "center",
+    borderRadius: 15,
+    padding: 5,
+    margin: 10,
+  },
+});
 
 export default Card;

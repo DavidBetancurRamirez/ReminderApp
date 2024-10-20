@@ -1,9 +1,10 @@
+import uuid from 'react-native-uuid';
+import { ReminderProps, ReminderType } from '../types/Reminder.type';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ReminderType } from '../types/Reminder.type';
 
 const useReminderStorage = () => {
-  const getKey = () => {
-    const key = process.env.MY_REMINDER_KEY;
+  const getKey = (): string => {
+    const key = process.env.EXPO_PUBLIC_MY_REMINDER_KEY;
 
     if (key === null) {
       throw new Error("INTERNAL SERVER ERROR");
@@ -12,7 +13,7 @@ const useReminderStorage = () => {
     return key as string;
   };
 
-  const getInfoFromStorage = async (storageKey: string) => {
+  const getInfoFromStorage = async (storageKey: string): Promise<ReminderType[]> => {
     try {
       const reminders = await AsyncStorage.getItem(storageKey);
 
@@ -27,7 +28,7 @@ const useReminderStorage = () => {
     }
   }
 
-  const saveInfoToStorage = async (storageKey: string, reminder: ReminderType) => {
+  const saveInfoToStorage = async (storageKey: string, reminder: ReminderType): Promise<void> => {
     try {
       const currentSavedReminders = await AsyncStorage.getItem(storageKey);
       let remindersToSave = [];
@@ -49,7 +50,7 @@ const useReminderStorage = () => {
     }
   };
 
-  const handleGetReminders = async () => {
+  const handleGetReminders = async (): Promise<ReminderType[]> => {
     try {
       const key = getKey();
 
@@ -59,17 +60,24 @@ const useReminderStorage = () => {
     }
   };
 
-  const handleSaveReminder = async (reminder: ReminderType) => {
+  const handleSaveReminder = async (reminder: ReminderProps): Promise<void> => {
     try {
       const key = getKey();
+      const id = uuid.v4();
 
-      return await saveInfoToStorage(key, reminder);
+      return await saveInfoToStorage(
+        key, 
+        {
+          ...reminder,
+          id
+        }
+      );
     } catch (error) {
       return Promise.reject(error);
     }
   };
 
-  const handleRemoveReminder = async (id: string) => {
+  const handleRemoveReminder = async (id: string): Promise<void> => {
     try {
       const key = getKey();
       const reminders = await handleGetReminders();
@@ -89,11 +97,32 @@ const useReminderStorage = () => {
     }
   }
 
+  
+
+  const deleteAll = async (): Promise<void> => {
+    try {
+      const key = getKey();
+      const reminders = await handleGetReminders();
+
+      const filteredItem: ReminderType[] = []
+
+      await AsyncStorage.setItem(
+        key,
+        JSON.stringify(filteredItem),
+      )
+
+      return Promise.resolve()
+    } catch (error) {
+      return Promise.reject(error);      
+    }
+  }
+
   return {
     onGetReminders: handleGetReminders,
     onSaveReminder: handleSaveReminder,
     onRemoveReminder: handleRemoveReminder,
+    deleteAll, // TODO
   }
-}
+};
 
 export default useReminderStorage;
