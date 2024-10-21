@@ -12,11 +12,12 @@ import { useThemeColor } from '@/src/hooks/useThemeColor';
 const Stack = createNativeStackNavigator();
 
 const UpgradeScreen = ({ navigation }: any) => {
-  const backgroundColor = useThemeColor("card");
+  const backgroundColor = useThemeColor("button");
 
   return (
     <ThemedView style={styles.container}>
       <ThemedText type="subtitle">Select how to upload your reminders</ThemedText>
+      <View style={{ height: 20 }} />
       
       <TouchableOpacity 
         style={[{backgroundColor}, styles.option]}

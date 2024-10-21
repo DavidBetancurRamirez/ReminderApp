@@ -1,7 +1,15 @@
+import { ThemedText } from '@/src/components/ThemedText';
+import { ThemedView } from '@/src/components/ThemedView';
+import { useThemeColor } from '@/src/hooks/useThemeColor';
 import React, { useState } from 'react';
 import { View, Text, TextInput, Switch, Button, StyleSheet } from 'react-native';
 
 const ManualReminderScreen = () => {
+  const [isFocused, setIsFocused] = useState(false);
+  const buttonColor = useThemeColor("button");
+  const cardColor = useThemeColor("card");
+  const textColor = useThemeColor("text");
+  const hoverColor = useThemeColor("primary");
   const [title, setTitle] = useState('');
   const [location, setLocation] = useState('');
   const [isAllDay, setIsAllDay] = useState(false);
@@ -9,56 +17,60 @@ const ManualReminderScreen = () => {
   const [endTime, setEndTime] = useState('');
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>New Reminder</Text>
+    <ThemedView style={styles.container}>
+      <ThemedText style={styles.title}>New Reminder</ThemedText>
 
       <TextInput
-        style={styles.input}
+        style={[
+          styles.input,
+          { backgroundColor: cardColor },
+          isFocused && { backgroundColor: hoverColor }
+        ]}
         placeholder="Title"
-        placeholderTextColor="#aaa"
-        value={title}
-        onChangeText={setTitle}
+        placeholderTextColor={textColor}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
       />
 
       <TextInput
-        style={styles.input}
+        style={[styles.input, { backgroundColor: cardColor}]}
         placeholder="Location or Link"
-        placeholderTextColor="#aaa"
+        placeholderTextColor={textColor}
         value={location}
         onChangeText={setLocation}
       />
 
-      <View style={styles.switchContainer}>
-        <Text style={styles.switchLabel}>All day</Text>
+      <ThemedView style={styles.switchContainer}>
+        <ThemedText style={styles.switchLabel}>All day</ThemedText>
         <Switch 
           value={isAllDay} 
           onValueChange={setIsAllDay} 
-          trackColor={{ false: "#767577", true: "#81b0ff" }}
-          thumbColor={isAllDay ? "#f5dd4b" : "#f4f3f4"}
+          trackColor={{ false: cardColor, true: "#81b0ff" }}
+          thumbColor={isAllDay ? "#2E7D4B" : "#f4f3f4"}
         />
-      </View>
+      </ThemedView>
 
       {!isAllDay && (
         <>
           <TextInput
-            style={styles.input}
-            placeholder="Starts"
-            placeholderTextColor="#aaa"
+        style={[styles.input, { backgroundColor: cardColor}]}
+        placeholder="Starts"
+            placeholderTextColor={textColor}
             value={startTime}
             onChangeText={setStartTime}
           />
           <TextInput
-            style={styles.input}
-            placeholder="Ends"
-            placeholderTextColor="#aaa"
+        style={[styles.input, { backgroundColor: cardColor}]}
+        placeholder="Ends"
+            placeholderTextColor={textColor}
             value={endTime}
             onChangeText={setEndTime}
           />
         </>
       )}
 
-      <Button title="Save Reminder" onPress={() => {/* Handle save */}} />
-    </View>
+      <Button title="Save Reminder" onPress={() => {/* Handle save */}} color={buttonColor} />
+    </ThemedView>
   );
 };
 
@@ -66,16 +78,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#1c1c1c',
   },
   title: {
-    color: 'white',
     fontSize: 20,
     marginBottom: 20,
   },
   input: {
-    backgroundColor: '#2b2b2b',
-    color: 'white',
     padding: 10,
     borderRadius: 5,
     marginBottom: 20,
@@ -87,7 +95,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   switchLabel: {
-    color: 'white',
     fontSize: 16,
   }
 });
