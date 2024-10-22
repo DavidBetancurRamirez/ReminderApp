@@ -1,10 +1,14 @@
-import React, { PropsWithChildren, useRef } from 'react'
+import React, { useRef } from 'react'
 import { ThemedView } from './ThemedView'
-import { Pressable, Animated, Text, StyleSheet } from 'react-native';
+import { Pressable, Animated, StyleSheet, type ViewProps, GestureResponderEvent } from 'react-native';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-const Card = ({ children }: PropsWithChildren<{}>) => {
+interface CardProps extends ViewProps {
+  onPress?: (event: GestureResponderEvent) => void;
+}
+
+const Card: React.FC<CardProps> = ({ children, style, onPress, ...rest }) => {
   const scale = useRef(new Animated.Value(1)).current;
 
   const onPressIn = () => {
@@ -25,11 +29,13 @@ const Card = ({ children }: PropsWithChildren<{}>) => {
     <AnimatedPressable
       onPressIn={onPressIn}
       onPressOut={onPressOut}
+      onPress={onPress}
       style={{ transform: [{ scale }] }}
     >
       <ThemedView 
         background={"card"} 
-        style={styles.card}
+        style={[styles.card, style]}
+        {...rest}
       >
         { children }
       </ThemedView>
