@@ -1,8 +1,11 @@
+import { ThemedText } from '@/src/components/ThemedText';
+import { ThemedView } from '@/src/components/ThemedView';
 import useReminderStorage from '@/src/hooks/useReminderStorage';
+import { useThemeColor } from '@/src/hooks/useThemeColor';
 import { ReminderProps } from '@/src/types/Reminder.type';
 import { formatDate } from '@/src/utils/date.util';
 import React, { useState } from 'react';
-import { View, Text, TextInput, Switch, Button, StyleSheet } from 'react-native';
+import { TextInput, Switch, Button, StyleSheet, Alert } from 'react-native';
 
 const ManualReminderScreen = () => {
   const [title, setTitle] = useState('');
@@ -13,16 +16,41 @@ const ManualReminderScreen = () => {
   const [date, setDate] = useState(new Date());
   const [group, setGroup] = useState("");
 
+  const cardColor = useThemeColor("card");
+  const buttonColor = useThemeColor("button");
+
   const { onSaveReminder } = useReminderStorage();
+
+  const resetStates = () => {
+    setTitle("");
+    setLocation("");
+    setIsAllDay(false);
+    setStartTime("");
+    setEndTime("");
+    setDate(new Date());
+    setGroup("");
+  }
 
   const handleSave = async () => {
     try {
+      validateStates()
       const data: ReminderProps = createReminderData();
   
       await onSaveReminder(data);
   
-      console.log("Saved");
+      resetStates();
+      Alert.alert("Reminder saved succesfully");
     } catch (error) {
+      let errorMessage = "An unknown error has occurred";
+
+      // Verificar si el error es una instancia de Error
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (typeof error === 'string') {
+        errorMessage = error; // Si es un string, lo usamos directamente
+      }
+
+      Alert.alert("Error", errorMessage); // Mostrar la alerta con el mensaje del error
       console.error(error);
     }
   };
@@ -45,12 +73,33 @@ const ManualReminderScreen = () => {
       };
   };
 
+  // Funciones temporales
+  const validateStates = () => {
+    const states = [
+      { name: 'title', value: title },
+    ];
+
+    if (!isAllDay) {
+      states.push({ name: 'startTime', value: startTime })
+      states.push({ name: 'endTime', value: endTime })
+    }
+  
+    states.forEach(({ name, value }) => {
+      if (!validateStringStates(value)) {
+        throw new Error(`Campo vacío: ${name}`);
+      }
+    });
+  }
+  const validateStringStates = (state: string) => {
+    return state.trim().length > 0
+  }
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>New Reminder</Text>
+    <ThemedView style={styles.container}>
+      <ThemedText style={styles.title}>New Reminder</ThemedText>
 
       <TextInput
-        style={styles.input}
+        style={[{ backgroundColor: cardColor }, styles.input]}
         placeholder="Title"
         placeholderTextColor="#aaa"
         value={title}
@@ -58,34 +107,34 @@ const ManualReminderScreen = () => {
       />
 
       <TextInput
-        style={styles.input}
+        style={[{ backgroundColor: cardColor }, styles.input]}
         placeholder="Location or Link"
         placeholderTextColor="#aaa"
         value={location}
         onChangeText={setLocation}
       />
 
-      <View style={styles.switchContainer}>
-        <Text style={styles.switchLabel}>All day</Text>
+      <ThemedView style={styles.switchContainer}>
+        <ThemedText style={styles.switchLabel}>All day</ThemedText>
         <Switch 
           value={isAllDay} 
           onValueChange={setIsAllDay} 
           trackColor={{ false: "#767577", true: "#81b0ff" }}
           thumbColor={isAllDay ? "#f5dd4b" : "#f4f3f4"}
         />
-      </View>
+      </ThemedView>
 
       {!isAllDay && (
         <>
           <TextInput
-            style={styles.input}
+            style={[{ backgroundColor: cardColor }, styles.input]}
             placeholder="Starts"
             placeholderTextColor="#aaa"
             value={startTime}
             onChangeText={setStartTime}
           />
           <TextInput
-            style={styles.input}
+            style={[{ backgroundColor: cardColor }, styles.input]}
             placeholder="Ends"
             placeholderTextColor="#aaa"
             value={endTime}
@@ -94,8 +143,12 @@ const ManualReminderScreen = () => {
         </>
       )}
 
-      <Button title="Save Reminder" onPress={handleSave} />
-    </View>
+      <Button 
+        title="Save Reminder" 
+        color={buttonColor}
+        onPress={handleSave} 
+      />
+    </ThemedView>
   );
 };
 
@@ -103,16 +156,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#1c1c1c',
   },
   title: {
-    color: 'white',
     fontSize: 20,
     marginBottom: 20,
   },
   input: {
-    backgroundColor: '#2b2b2b',
-    color: 'white',
     padding: 10,
     borderRadius: 5,
     marginBottom: 20,
@@ -124,7 +173,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   switchLabel: {
-    color: 'white',
     fontSize: 16,
   }
 });
