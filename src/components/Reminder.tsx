@@ -1,8 +1,8 @@
 import React from 'react'
-import { ThemedText } from '@/src/components/ThemedText';
-import { ThemedView } from '@/src/components/ThemedView';
+import { ThemedText } from './Theme/ThemedText';
+import { ThemedView } from './Theme/ThemedView';
 import { StyleSheet } from 'react-native';
-import Card from '@/src/components/Card';
+import Card from './Card';
 import { Icon } from './Icon';
 import { dateName } from '../utils/date.util';
 import { ReminderProps } from '../types/Reminder.type';

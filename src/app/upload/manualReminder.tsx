@@ -1,11 +1,11 @@
-import { ThemedText } from '@/src/components/ThemedText';
-import { ThemedView } from '@/src/components/ThemedView';
-import useReminderStorage from '@/src/hooks/useReminderStorage';
-import { useThemeColor } from '@/src/hooks/useThemeColor';
-import { ReminderProps } from '@/src/types/Reminder.type';
-import { formatDate } from '@/src/utils/date.util';
+import { ThemedText } from '../../components/Theme/ThemedText';
+import { ThemedView } from '../../components/Theme/ThemedView';
+import useReminderStorage from '../../hooks/useReminderStorage';
+import { useThemeColor } from '../../hooks/useThemeColor';
+import { ReminderProps } from '../../types/Reminder.type';
+import { formatDate } from '../../utils/date.util';
 import React, { useState } from 'react';
-import { TextInput, Switch, Button, StyleSheet, Alert } from 'react-native';
+import { TextInput, Switch, Button, StyleSheet, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 
 const ManualReminderScreen = () => {
   const [title, setTitle] = useState('');
@@ -43,14 +43,13 @@ const ManualReminderScreen = () => {
     } catch (error) {
       let errorMessage = "An unknown error has occurred";
 
-      // Verificar si el error es una instancia de Error
       if (error instanceof Error) {
         errorMessage = error.message;
       } else if (typeof error === 'string') {
-        errorMessage = error; // Si es un string, lo usamos directamente
+        errorMessage = error;
       }
 
-      Alert.alert("Error", errorMessage); // Mostrar la alerta con el mensaje del error
+      Alert.alert("Error", errorMessage);
       console.error(error);
     }
   };
@@ -95,60 +94,65 @@ const ManualReminderScreen = () => {
   }
 
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText style={styles.title}>New Reminder</ThemedText>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={{ flex: 1 }}
+    >
+      <ThemedView style={styles.container}>
+        <ThemedText style={styles.title}>New Reminder</ThemedText>
 
-      <TextInput
-        style={[{ backgroundColor: cardColor }, styles.input]}
-        placeholder="Title"
-        placeholderTextColor="#aaa"
-        value={title}
-        onChangeText={setTitle}
-      />
+        <TextInput
+          style={[{ backgroundColor: cardColor }, styles.input]}
+          placeholder="Title"
+          placeholderTextColor="#aaa"
+          value={title}
+          onChangeText={setTitle}
+        />
 
-      <TextInput
-        style={[{ backgroundColor: cardColor }, styles.input]}
-        placeholder="Location or Link"
-        placeholderTextColor="#aaa"
-        value={location}
-        onChangeText={setLocation}
-      />
+        <TextInput
+          style={[{ backgroundColor: cardColor }, styles.input]}
+          placeholder="Location or Link"
+          placeholderTextColor="#aaa"
+          value={location}
+          onChangeText={setLocation}
+        />
 
-      <ThemedView style={styles.switchContainer}>
-        <ThemedText style={styles.switchLabel}>All day</ThemedText>
-        <Switch 
-          value={isAllDay} 
-          onValueChange={setIsAllDay} 
-          trackColor={{ false: "#767577", true: "#81b0ff" }}
-          thumbColor={isAllDay ? "#f5dd4b" : "#f4f3f4"}
+        <ThemedView style={styles.switchContainer}>
+          <ThemedText style={styles.switchLabel}>All day</ThemedText>
+          <Switch 
+            value={isAllDay} 
+            onValueChange={setIsAllDay} 
+            trackColor={{ false: "#767577", true: "#81b0ff" }}
+            thumbColor={isAllDay ? "#f5dd4b" : "#f4f3f4"}
+          />
+        </ThemedView>
+
+        {!isAllDay && (
+          <>
+            <TextInput
+              style={[{ backgroundColor: cardColor }, styles.input]}
+              placeholder="Starts"
+              placeholderTextColor="#aaa"
+              value={startTime}
+              onChangeText={setStartTime}
+            />
+            <TextInput
+              style={[{ backgroundColor: cardColor }, styles.input]}
+              placeholder="Ends"
+              placeholderTextColor="#aaa"
+              value={endTime}
+              onChangeText={setEndTime}
+            />
+          </>
+        )}
+
+        <Button 
+          title="Save Reminder" 
+          color={buttonColor}
+          onPress={handleSave} 
         />
       </ThemedView>
-
-      {!isAllDay && (
-        <>
-          <TextInput
-            style={[{ backgroundColor: cardColor }, styles.input]}
-            placeholder="Starts"
-            placeholderTextColor="#aaa"
-            value={startTime}
-            onChangeText={setStartTime}
-          />
-          <TextInput
-            style={[{ backgroundColor: cardColor }, styles.input]}
-            placeholder="Ends"
-            placeholderTextColor="#aaa"
-            value={endTime}
-            onChangeText={setEndTime}
-          />
-        </>
-      )}
-
-      <Button 
-        title="Save Reminder" 
-        color={buttonColor}
-        onPress={handleSave} 
-      />
-    </ThemedView>
+    </KeyboardAvoidingView>
   );
 };
 

@@ -1,8 +1,8 @@
-import Card from "@/src/components/Card";
+import Card from "../../components/Card";
 import { StyleSheet } from "react-native";
-import { Icon } from "@/src/components/Icon";
-import { ThemedText } from "@/src/components/ThemedText";
-import { ThemedView } from "@/src/components/ThemedView";
+import { Icon } from "../../components/Icon";
+import { ThemedText } from "../../components/Theme/ThemedText";
+import { ThemedView } from "../../components/Theme/ThemedView";
 
 const Upload = ({ navigation }: any) => {
   return (

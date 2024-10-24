@@ -4,7 +4,7 @@ import UploadCSVScreen from '../upload/reminderFromCSV';
 import ManualReminderScreen from '../upload/manualReminder';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { ThemedView } from '@/src/components/ThemedView';
+import { ThemedView } from '../../components/Theme/ThemedView';
 
 const Stack = createNativeStackNavigator();
 

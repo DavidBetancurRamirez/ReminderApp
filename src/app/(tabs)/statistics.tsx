@@ -1,12 +1,12 @@
 import { StyleSheet } from 'react-native';
 
-import { ThemedText } from '@/src/components/ThemedText';
-import { ThemedView } from '@/src/components/ThemedView';
+import { ThemedText } from '../../components/Theme/ThemedText';
+import { ThemedView } from '../../components/Theme/ThemedView';
 
 const Statistics = () => {
   return (
     <ThemedView style={styles.titleContainer} background='card'>
-        <ThemedText type="title" textColor='notification'>Statistics!</ThemedText>
+      <ThemedText type="title" textColor='notification'>Statistics!</ThemedText>
     </ThemedView> 
   )
 }

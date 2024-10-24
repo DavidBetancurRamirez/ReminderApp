@@ -1,6 +1,6 @@
-import { ThemedText } from '@/src/components/ThemedText';
-import { ThemedView } from '@/src/components/ThemedView';
-import ThemeToggleButton from '@/src/components/ThemeToggleButton';
+import { ThemedText } from '../../components/Theme/ThemedText';
+import { ThemedView } from '../../components/Theme/ThemedView';
+import ThemeToggleButton from '../../components/Theme/ThemeToggleButton';
 import React from 'react'
 import { StyleSheet } from 'react-native';
 

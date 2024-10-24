@@ -1,5 +1,5 @@
 import React, { useRef } from 'react'
-import { ThemedView } from './ThemedView'
+import { ThemedView } from './Theme/ThemedView'
 import { Pressable, Animated, StyleSheet, type ViewProps, GestureResponderEvent } from 'react-native';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
