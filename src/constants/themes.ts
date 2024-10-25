@@ -35,7 +35,7 @@ export const LightTheme: CustomTheme = {
     ...NavigationDefaultTheme.colors,
     primary: '#2E7D4B',
     background: '#F2F2F2',
-    card: '#EAEAEA',
+    card: '#D6D6D6',
     text: '#3C3C3C',
     textSecondary: '#000000',
     border: '#DADADA',
