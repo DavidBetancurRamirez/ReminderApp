@@ -1,45 +1,42 @@
+import ThemedTextInput from '../../components/Theme/ThemedTextInput';
 import { ThemedText } from '../../components/Theme/ThemedText';
-import { ThemedView } from '../../components/Theme/ThemedView';
 import useReminderStorage from '../../hooks/useReminderStorage';
 import { useThemeColor } from '../../hooks/useThemeColor';
-import { ReminderProps } from '../../types/Reminder.type';
-import { formatDate } from '../../utils/date.util';
-import React, { useState } from 'react';
-import { TextInput, Switch, Button, StyleSheet, Alert, KeyboardAvoidingView, Platform } from 'react-native';
+import { StyleSheet, Alert, KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
+import { useForm } from '../../hooks/useForm';
+import ThemedSwitch from '../../components/Theme/ThemedSwitch';
+import DateTimeSelector from '@/src/components/DateTimeSelector';
+import { useState } from 'react';
+import GroupSelector from '@/src/components/GroupModal';
+import Card from '@/src/components/Card';
+
+const baseState = {
+  name: "",
+  group: "",
+  location: "",
+  description: "",
+  startTime: new Date(),
+  endTime: new Date(),
+}
 
 const ManualReminderScreen = () => {
-  const [title, setTitle] = useState('');
-  const [location, setLocation] = useState('');
-  const [isAllDay, setIsAllDay] = useState(false);
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
-  const [date, setDate] = useState(new Date());
-  const [group, setGroup] = useState("");
+  const [details, setDetails] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
-  const cardColor = useThemeColor("card");
+  const { form, handleChange, handleReset } = useForm(baseState);
+
   const buttonColor = useThemeColor("button");
 
   const { onSaveReminder } = useReminderStorage();
 
-  const resetStates = () => {
-    setTitle("");
-    setLocation("");
-    setIsAllDay(false);
-    setStartTime("");
-    setEndTime("");
-    setDate(new Date());
-    setGroup("");
-  }
-
   const handleSave = async () => {
     try {
-      validateStates()
-      const data: ReminderProps = createReminderData();
+      // TODO: Validaciones
+      // await onSaveReminder(form);
+
+      console.log(form)
   
-      await onSaveReminder(data);
-  
-      resetStates();
-      Alert.alert("Reminder saved succesfully");
+      handleReset();
     } catch (error) {
       let errorMessage = "An unknown error has occurred";
 
@@ -54,43 +51,11 @@ const ManualReminderScreen = () => {
     }
   };
 
-  const createReminderData = (): ReminderProps => {
-    return isAllDay
-      ? {
-        name: title,
-        date: formatDate(date),
-        allDay: true,
-        group,
-      }
-      : {
-        name: title,
-        date: formatDate(date),
-        allDay: false,
-        startTime: startTime,
-        endTime: endTime,
-        group,
-      };
-  };
-
-  // Funciones temporales
-  const validateStates = () => {
-    const states = [
-      { name: 'title', value: title },
-    ];
-
-    if (!isAllDay) {
-      states.push({ name: 'startTime', value: startTime })
-      states.push({ name: 'endTime', value: endTime })
+  const handleModalClose = async (shouldUpdate ?: boolean) => {
+    if (shouldUpdate) {
+      Alert.alert("Food saved succesfully");
     }
-  
-    states.forEach(({ name, value }) => {
-      if (!validateStringStates(value)) {
-        throw new Error(`Campo vacío: ${name}`);
-      }
-    });
-  }
-  const validateStringStates = (state: string) => {
-    return state.trim().length > 0
+    setModalVisible(false);
   }
 
   return (
@@ -98,60 +63,78 @@ const ManualReminderScreen = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{ flex: 1 }}
     >
-      <ThemedView style={styles.container}>
+      <ScrollView style={styles.container}>
         <ThemedText style={styles.title}>New Reminder</ThemedText>
 
-        <TextInput
-          style={[{ backgroundColor: cardColor }, styles.input]}
-          placeholder="Title"
-          placeholderTextColor="#aaa"
-          value={title}
-          onChangeText={setTitle}
+        <ThemedTextInput 
+          keyName="name"
+          form={form} 
+          setValue={handleChange} 
         />
 
-        <TextInput
-          style={[{ backgroundColor: cardColor }, styles.input]}
-          placeholder="Location or Link"
-          placeholderTextColor="#aaa"
-          value={location}
-          onChangeText={setLocation}
-        />
-
-        <ThemedView style={styles.switchContainer}>
-          <ThemedText style={styles.switchLabel}>All day</ThemedText>
-          <Switch 
-            value={isAllDay} 
-            onValueChange={setIsAllDay} 
-            trackColor={{ false: "#767577", true: "#81b0ff" }}
-            thumbColor={isAllDay ? "#f5dd4b" : "#f4f3f4"}
+        <View style={styles.dateContainer}>
+          <DateTimeSelector
+            title="Start"
+            keyName="startTime"
+            date={form.startTime}
+            setDate={handleChange}
           />
-        </ThemedView>
 
-        {!isAllDay && (
+          <DateTimeSelector
+            title="End"
+            keyName="endTime"
+            date={form.endTime}
+            minimumDate={form.startTime}
+            setDate={handleChange}
+          />
+        </View>
+
+        <ThemedSwitch 
+          text="Add details"
+          enabled= {details}
+          value={details}
+          onValueChange={() => setDetails(!details)}
+        />
+
+        {details && (
           <>
-            <TextInput
-              style={[{ backgroundColor: cardColor }, styles.input]}
-              placeholder="Starts"
-              placeholderTextColor="#aaa"
-              value={startTime}
-              onChangeText={setStartTime}
+            <Card onPress={() => setModalVisible(true)}>
+              <ThemedText>Select group</ThemedText>
+            </Card>
+
+            <ThemedTextInput 
+              keyName="location" 
+              form={form} 
+              setValue={handleChange} 
             />
-            <TextInput
-              style={[{ backgroundColor: cardColor }, styles.input]}
-              placeholder="Ends"
-              placeholderTextColor="#aaa"
-              value={endTime}
-              onChangeText={setEndTime}
+    
+            <ThemedTextInput 
+              keyName="description" 
+              form={form} 
+              setValue={handleChange} 
+              multiline={true}
+              numberOfLines={3}
+              textAlignVertical="top"
             />
           </>
         )}
 
-        <Button 
-          title="Save Reminder" 
-          color={buttonColor}
-          onPress={handleSave} 
+        <Card 
+          style={[
+            { backgroundColor: buttonColor }, 
+            styles.button
+          ]}
+          onPress={handleSave}
+        >
+          <ThemedText>Save Reminder</ThemedText>
+        </Card>
+        
+            
+        <GroupSelector 
+          visible={modalVisible} 
+          onClose={handleModalClose} 
         />
-      </ThemedView>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 };
@@ -159,25 +142,20 @@ const ManualReminderScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: 16,
   },
   title: {
     fontSize: 20,
-    marginBottom: 20,
+    fontWeight: "bold",
+    textAlign: "center"
   },
-  input: {
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 20,
+  dateContainer: {
+    flexDirection: "row",
   },
-  switchContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  switchLabel: {
-    fontSize: 16,
+  button: {
+    margin: 0,
+    marginVertical: 20,
+    justifyContent: "center"
   }
 });
 

@@ -1,9 +1,17 @@
 import { differenceInDays, format, parse } from "date-fns";
 
-const baseFormat = "yyyy-MM-dd";
+export const dateAgendaFormat = "yyyy-MM-dd";
 
 export const formatDate = (date: Date) => {
-  return format(date, baseFormat);
+  return format(date, 'dd/MM/yyyy');
+}
+
+export const formatDateAgenda = (date: Date) => {
+  return format(date, dateAgendaFormat);
+}
+
+export const formatTime = (date: Date) => {
+  return format(date, 'hh:mm aa');
 }
 
 export const startOfDay = (date: Date | string) => {
@@ -13,7 +21,7 @@ export const startOfDay = (date: Date | string) => {
 };
 
 export const dateName = (dateString: string) => {
-  const date = parse(dateString, baseFormat, new Date());
+  const date = parse(dateString, dateAgendaFormat, new Date());
   const today = startOfDay(new Date());
 
   const diffDays = differenceInDays(
