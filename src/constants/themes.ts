@@ -11,6 +11,7 @@ export type CustomTheme = Theme & {
     border: string;
     button: string;
     buttonHover: string;
+    danger: string;
   };
 };
 
@@ -26,6 +27,7 @@ export const DarkTheme: CustomTheme = {
     border: '#2E2E2E',
     button: '#2E7D4B',
     buttonHover: '#1D6A40',
+    danger: '#D32F2F',
   },
 };
 
@@ -41,5 +43,6 @@ export const LightTheme: CustomTheme = {
     border: '#DADADA',
     button: '#2E7D4B',
     buttonHover: '#1D6A40',
+    danger: '#D32F2F',
   },
 };

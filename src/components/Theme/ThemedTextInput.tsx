@@ -4,20 +4,21 @@ import { StyleSheet, TextInput, TextInputProps, View } from 'react-native';
 
 type ThemedTextInputProps<T extends object> = TextInputProps & {
   keyName: keyof T;
+  title?: string;
   form: T;
   setValue: (update: { key: keyof T; value: T[keyof T] }) => void;
 }
 
-const ThemedTextInput = <T extends object>({ keyName, setValue, form, ...rest }: ThemedTextInputProps<T>) => {
+const ThemedTextInput = <T extends object>({ keyName, title, setValue, form, ...rest }: ThemedTextInputProps<T>) => {
   const cardColor = useThemeColor("card");
   const textColor = useThemeColor("text");
   const textSecundaryColor = useThemeColor("textSecondary");
 
-  const name = capitalizeFirstLetter(String(keyName))
+  const titleName = capitalizeFirstLetter(String(title || keyName))
 
   return (
     <View style={styles.container}>
-      <ThemedText type='inputTitle'>{name}</ThemedText>
+      <ThemedText type='inputTitle'>{titleName}</ThemedText>
       <TextInput
         style={[
           { 
@@ -26,7 +27,7 @@ const ThemedTextInput = <T extends object>({ keyName, setValue, form, ...rest }:
           }, 
           styles.input
         ]}
-        placeholder={rest.placeholder || name} 
+        placeholder={rest.placeholder || titleName}
         value={String(form[keyName])}
         placeholderTextColor={textSecundaryColor}
         onChangeText={(value) => 

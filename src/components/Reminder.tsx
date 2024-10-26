@@ -9,7 +9,7 @@ import { ReminderProps } from '../types/Reminder.type';
 
 const Reminder = (reminder: ReminderProps) => {
   return (
-    <Card>
+    <Card style={styles.card}>
       <Icon name="notifications" size={30} />
 
       <ThemedView background='card' style={styles.infoContainer}>
@@ -36,6 +36,9 @@ const Reminder = (reminder: ReminderProps) => {
 }
 
 const styles = StyleSheet.create({
+  card: {
+    margin: 10,
+  },
   infoContainer: {
     flex: 1,
     marginHorizontal: 10,
