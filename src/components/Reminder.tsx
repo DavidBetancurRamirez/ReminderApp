@@ -17,15 +17,15 @@ const Reminder = (reminder: ReminderProps) => {
         <ThemedText style={styles.title}>{reminder.name}</ThemedText>
 
         <ThemedText style={styles.group}>
-          {dateName(reminder.date)}
+          {/* {dateName(reminder.date)} */}
           {reminder.group && " | " + reminder.group}
         </ThemedText>
 
         <ThemedText style={styles.info}>
-          {reminder.allDay 
+          {/* {reminder.allDay 
             ? "All Day" 
             : reminder.startTime + " - " + reminder.endTime
-          }
+          } */}
         </ThemedText>
 
       </ThemedView>

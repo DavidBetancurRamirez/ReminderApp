@@ -1,8 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Card from '@/src/components/Card';
 import { useForm } from '../../hooks/useForm';
 import { useThemeColor } from '../../hooks/useThemeColor';
-import GroupSelector from '@/src/components/GroupSelector';
 import ThemedSwitch from '../../components/Theme/ThemedSwitch';
 import { ThemedText } from '../../components/Theme/ThemedText';
 import useReminderStorage from '../../hooks/useReminderStorage';
@@ -10,31 +9,36 @@ import DateTimeSelector from '@/src/components/DateTimeSelector';
 import ThemedTextInput from '../../components/Theme/ThemedTextInput';
 import { StyleSheet, Alert, KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
 import { errorAlert } from '@/src/utils/errorAlert.util';
+import { ReminderProps } from '@/src/types/Reminder.type';
+import useGroupStorage from '@/src/hooks/useGroupStorage';
+import GroupModal from '@/src/components/GroupModal';
+import Group from '@/src/components/Group';
 
-const baseState = {
+const baseState: ReminderProps = {
   name: "",
-  group: "",
   location: "",
   description: "",
+  group: undefined,
   startTime: new Date(),
   endTime: new Date(),
 }
 
 const ManualReminderScreen = () => {
   const [details, setDetails] = useState(false);
+  const [groupModalVisible, setGroupModalVisible] = useState(false);
 
-  const { form, handleChange, handleReset } = useForm(baseState);
+  const { form, handleChange, handleReset } = useForm<ReminderProps>(baseState);
 
   const buttonColor = useThemeColor("button");
 
   const { onSaveReminder } = useReminderStorage();
+  const { onGetGroup } = useGroupStorage();
 
   const handleSave = async () => {
     try {
-      // TODO: Validaciones
-      // await onSaveReminder(form);
+      await onSaveReminder(form);
 
-      console.log(form)
+      Alert.alert("Message", "Reminder saved succesfully");
   
       handleReset();
     } catch (error) {
@@ -43,11 +47,23 @@ const ManualReminderScreen = () => {
   };
 
   const handleRemoveGroup = () => {
-    console.log("Remove Group")
+    handleChange({ key: 'group', value: undefined });
   }
   
-  const handleSelectGroup = () => {
-    console.log("Add Group")
+  const handleSelectGroup = async (id: string) => {
+    try {
+      const group = await onGetGroup(id);
+
+      handleChange({ key: 'group', value: group });
+
+      handleGroupModalClose();
+    } catch (error) {
+      errorAlert(error);      
+    }
+  }
+
+  const handleGroupModalClose = async () => {
+    setGroupModalVisible(false);
   }
 
   return (
@@ -90,7 +106,25 @@ const ManualReminderScreen = () => {
 
         {details && (
           <>
-            <GroupSelector group={form.group} remove={handleRemoveGroup} add={handleSelectGroup} />
+            <View style={styles.groupContainer}>
+              <View style={styles.groupContent}>
+                {form.group ?
+                  <Group 
+                    {...form.group}
+                    remove={handleRemoveGroup} 
+                    style={styles.group}
+                  />
+                :
+                  <ThemedText>No group selected</ThemedText>
+                }
+              </View>
+              <Card 
+                onPress={() => setGroupModalVisible(true)}
+                style={styles.groupButton}
+              >
+                <ThemedText>{form.group ? "Change" : "Select"} group</ThemedText>
+              </Card>
+            </View>
 
             <ThemedTextInput 
               keyName="location" 
@@ -119,6 +153,11 @@ const ManualReminderScreen = () => {
           <ThemedText>Save Reminder</ThemedText>
         </Card>
         
+        <GroupModal 
+          visible={groupModalVisible} 
+          onClose={handleGroupModalClose} 
+          select={handleSelectGroup} 
+        />
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -137,6 +176,23 @@ const styles = StyleSheet.create({
   dateContainer: {
     flexDirection: "row",
   },
+  groupContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 5,
+    alignItems: "center",
+  },
+  groupContent: {
+    flex: 1,
+    marginRight: 15
+  },
+  group: {
+    marginBottom: 0,
+    padding: 8,
+  },
+  groupButton: {
+    paddingHorizontal: 15
+  }, 
   button: {
     marginVertical: 20,
     justifyContent: "center"

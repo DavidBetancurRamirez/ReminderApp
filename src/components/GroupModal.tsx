@@ -18,14 +18,14 @@ const { height } = Dimensions.get('window');
 type GroupModalProps = {
   visible: boolean;
   onClose: () => void;
-  add: () => void;
+  select?: (id: string) => void;
 }
 
-const baseState = {
+const baseState: GroupProps = {
   name: "",
 }
 
-const GroupModal = ({ visible, onClose, add }: GroupModalProps) => {
+const GroupModal = ({ visible, onClose, select }: GroupModalProps) => {
   const [groups, setGroups] = useState<GroupType[]>([]);
 
   const { form, handleChange, handleReset } = useForm<GroupProps>(baseState);
@@ -40,7 +40,7 @@ const GroupModal = ({ visible, onClose, add }: GroupModalProps) => {
       setGroups(groupsResponse);
     } catch (error) {
       setGroups([]);
-      console.error(error);
+      errorAlert(error);
     }
   }, []);
 
@@ -52,12 +52,12 @@ const GroupModal = ({ visible, onClose, add }: GroupModalProps) => {
 
   const handleAddPress = async () => {
     try {
-      validationForm();
       await onSaveGroup({ name: form.name }, groups)
 
       Alert.alert("Message", "Group saved succesfully");
-      loadGroups();
+      
       handleReset();
+      await loadGroups();
     } catch (error) {
       errorAlert(error);
     }
@@ -70,15 +70,9 @@ const GroupModal = ({ visible, onClose, add }: GroupModalProps) => {
       Alert.alert("Message", "Group removed succesfully");
       loadGroups();
     } catch (error) {
-      console.error(error);
+      errorAlert(error);
     }
   };
-
-  const validationForm = () => {
-    if (form.name.trim().length === 0) {
-      throw new Error("Name is empty");
-    }
-  }
 
   return (
     <Modal 
@@ -109,9 +103,7 @@ const GroupModal = ({ visible, onClose, add }: GroupModalProps) => {
               />
             </View>
             <Card style={[
-              {
-                backgroundColor: buttonColor
-              }, 
+              { backgroundColor: buttonColor }, 
               styles.buttonContainer
             ]}>
               <Icon 
@@ -131,10 +123,10 @@ const GroupModal = ({ visible, onClose, add }: GroupModalProps) => {
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) =>
                   <Group 
+                    id={item.id}
                     name={item.name} 
                     remove={handleRemovePress}
-                    id={item.id}
-                    add={add} 
+                    select={select}
                   />
                 }
                 initialNumToRender={10}

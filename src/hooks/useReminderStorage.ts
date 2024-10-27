@@ -6,31 +6,29 @@ const keyName = "EXPO_PUBLIC_MY_REMINDER_KEY";
 
 const useReminderStorage = () => {
   const onGetReminders = async (): Promise<ReminderType[] | []> => {
-    try {
-      const key = getEnvKey(keyName);
-      return await getItems(key);
-    } catch (error) {
-      return Promise.reject(error);      
-    }
+    const key = getEnvKey(keyName);
+    return await getItems(key);
   };
 
   const onSaveReminder = async (reminder: ReminderProps): Promise<void> => {
-    try {
-      const key = getEnvKey(keyName);
-      const id = uuid.v4();
+    validateReminderProps(reminder);
+    
+    const key = getEnvKey(keyName);
+    const id = uuid.v4();
 
-      return await saveItem(key, { ...reminder, id });
-    } catch (error) {
-      return Promise.reject(error);
-    }
+    await saveItem(key, { ...reminder, id });
   };
 
   const onRemoveReminder = async (id: string): Promise<void> => {
-    try {
-      const key = getEnvKey(keyName);
-      await removeItem<ReminderType>(key, (item) => item.id === id)
-    } catch (error) {
-      return Promise.reject(error);      
+    const key = getEnvKey(keyName);
+    await removeItem<ReminderType>(key, (item) => item.id === id)
+  }
+
+  const validateReminderProps = (reminder: ReminderProps) => {
+    // Name required
+    console.log(reminder)
+    if (reminder.name.trim().length === 0) {
+      throw new Error("Name is empty");
     }
   }
 
@@ -38,6 +36,7 @@ const useReminderStorage = () => {
     onGetReminders,
     onSaveReminder,
     onRemoveReminder,
+    validateReminderProps
   }
 };
 

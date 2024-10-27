@@ -4,5 +4,4 @@ export type GroupProps = {
 
 export type GroupType = GroupProps & {
   id: string;
-  name: string;
 }

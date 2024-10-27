@@ -6,45 +6,55 @@ const keyName = "EXPO_PUBLIC_MY_GROUP_KEY";
 
 const useGroupStorage = () => {
   const onGetGroups = async (): Promise<GroupType[] | []> => {
-    try {
-      const key = getEnvKey(keyName);
-      return await getItems(key);
-    } catch (error) {
-      return Promise.reject(error);      
+    const key = getEnvKey(keyName);
+    return await getItems(key);
+  };
+
+  const onGetGroup = async (id: string): Promise<GroupType | undefined> => {
+    const groups = await onGetGroups();
+    const group = groups.find((g) => g.id === id);
+
+    if (!group) {
+      throw new Error("Group not found");
     }
+
+    return group;
   };
 
   const onSaveGroup = async (group: GroupProps, groups?: GroupType[]): Promise<void> => {
-    try {
-      let search = groups || await onGetGroups();
+    await validateGroupProps(group, groups);
 
-      const find = search.find((g) => g.name === group.name);
-      if (find) {
-        throw new Error("The name must be unique")
-      }
+    const key = getEnvKey(keyName);
+    const id = uuid.v4();
 
-      const key = getEnvKey(keyName);
-      const id = uuid.v4();
-
-      return await saveItem(key, { ...group, id });
-    } catch (error) {
-      return Promise.reject(error);
-    }
+    await saveItem(key, { ...group, id });
   };
 
   const onRemoveGroup = async (id: string): Promise<void> => {
-    try {
-      const key = getEnvKey(keyName);
-      await removeItem<GroupType>(key, (item) => item.id === id)
-    } catch (error) {
-      return Promise.reject(error);      
+    const key = getEnvKey(keyName);
+    await removeItem<GroupType>(key, (item) => item.id === id)
+  }
+
+  const validateGroupProps = async (group: GroupProps, groups?: GroupType[]) => {
+    // Name required
+    if (group.name.trim().length === 0) {
+      throw new Error("Name is empty");
+    }
+      
+    // Unique name
+    let search = groups || await onGetGroups();
+    const find = search.find((g) => g.name.toLowerCase() === group.name.toLowerCase());
+    if (find) {
+      throw new Error("The name must be unique")
     }
   }
 
   return {
     onGetGroups,
+    onGetGroup,
     onSaveGroup,
     onRemoveGroup,
+    validateGroupProps
   }
 };
 

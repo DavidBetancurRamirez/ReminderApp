@@ -1,38 +1,41 @@
 import React from 'react'
 import { Icon } from './Icon'
-import { View, StyleSheet } from 'react-native'
+import { View, StyleSheet, ViewProps } from 'react-native'
 import { ThemedText } from './Theme/ThemedText'
 import { useThemeColor } from '../hooks/useThemeColor'
-import { GroupProps } from '../types/Group.type'
+import { GroupProps, GroupType } from '../types/Group.type'
 
-type GroupComponentProps = GroupProps & {
-  id: string;
+export type GroupComponentProps = GroupType & ViewProps & {
   remove: (id: string) => void;
-  add: () => void;
+  select?: (id: string) => void;
 }
 
-const Group = ({ name, id, remove, add }: GroupComponentProps) => {
+const Group = ({ id, name, remove, select, style, ...rest }: GroupComponentProps) => {
   const cardColor = useThemeColor("card");
 
   return (
-    <View style={[
-      {
-        backgroundColor: cardColor
-      }, 
-      styles.container
-    ]}>
+    <View 
+      style={[
+        { backgroundColor: cardColor }, 
+        styles.container,
+        style
+      ]}
+      {...rest}
+    >
       <ThemedText style={styles.name}>{name}</ThemedText>
       <Icon 
         name='remove-circle-outline' 
         size={24}
         onPress={() => remove(id)}
-        style={styles.leftIcon}
+        style={select && {marginHorizontal: 10}}
       />
-      <Icon 
-        name='add-circle-outline'
-        size={24}
-        onPress={add}
-      />
+      {select && 
+        <Icon
+          name='add-circle-outline'
+          size={24}
+          onPress={() => select(id)}
+        />
+      }
     </View>
   )
 }
@@ -49,9 +52,6 @@ const styles = StyleSheet.create({
   name: {
     flex: 1
   },
-  leftIcon: {
-    marginHorizontal: 10
-  }
 })
 
 export default Group
