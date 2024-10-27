@@ -6,11 +6,12 @@ import { useThemeColor } from '../hooks/useThemeColor'
 import { GroupProps } from '../types/Group.type'
 
 type GroupComponentProps = GroupProps & {
-  remove: () => void;
+  id: string;
+  remove: (id: string) => void;
   add: () => void;
 }
 
-const Group = ({ name, remove, add }: GroupComponentProps) => {
+const Group = ({ name, id, remove, add }: GroupComponentProps) => {
   const cardColor = useThemeColor("card");
 
   return (
@@ -24,7 +25,7 @@ const Group = ({ name, remove, add }: GroupComponentProps) => {
       <Icon 
         name='remove-circle-outline' 
         size={24}
-        onPress={remove}
+        onPress={() => remove(id)}
         style={styles.leftIcon}
       />
       <Icon 

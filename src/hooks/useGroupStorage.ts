@@ -5,7 +5,7 @@ import { getEnvKey, saveItem, getItems, removeItem } from '../utils/storage.util
 const keyName = "EXPO_PUBLIC_MY_GROUP_KEY";
 
 const useGroupStorage = () => {
-  const onGetGroup = async (): Promise<GroupType[] | []> => {
+  const onGetGroups = async (): Promise<GroupType[] | []> => {
     try {
       const key = getEnvKey(keyName);
       return await getItems(key);
@@ -14,8 +14,15 @@ const useGroupStorage = () => {
     }
   };
 
-  const onSaveGroup = async (group: GroupProps): Promise<void> => {
+  const onSaveGroup = async (group: GroupProps, groups?: GroupType[]): Promise<void> => {
     try {
+      let search = groups || await onGetGroups();
+
+      const find = search.find((g) => g.name === group.name);
+      if (find) {
+        throw new Error("The name must be unique")
+      }
+
       const key = getEnvKey(keyName);
       const id = uuid.v4();
 
@@ -35,7 +42,7 @@ const useGroupStorage = () => {
   }
 
   return {
-    onGetGroup,
+    onGetGroups,
     onSaveGroup,
     onRemoveGroup,
   }

@@ -9,6 +9,7 @@ import useReminderStorage from '../../hooks/useReminderStorage';
 import DateTimeSelector from '@/src/components/DateTimeSelector';
 import ThemedTextInput from '../../components/Theme/ThemedTextInput';
 import { StyleSheet, Alert, KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
+import { errorAlert } from '@/src/utils/errorAlert.util';
 
 const baseState = {
   name: "",
@@ -37,16 +38,7 @@ const ManualReminderScreen = () => {
   
       handleReset();
     } catch (error) {
-      let errorMessage = "An unknown error has occurred";
-
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      } else if (typeof error === 'string') {
-        errorMessage = error;
-      }
-
-      Alert.alert("Error", errorMessage);
-      console.error(error);
+      errorAlert(error);
     }
   };
 

@@ -16,9 +16,9 @@ const GroupSelector = ({ group, remove, add }: any) => {
     <>
       <View style={styles.selectGroup}>
         {group ?
-          <Group name={group} remove={remove} add={add} />
+          <Group name={group} remove={remove} add={add} id="" />
         :
-          <ThemedText>No group selected yet</ThemedText>
+          <ThemedText>No group selected</ThemedText>
         }
         <Card 
           onPress={() => setModalVisible(true)}

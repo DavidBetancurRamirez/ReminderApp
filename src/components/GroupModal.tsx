@@ -1,14 +1,17 @@
-import { View, StyleSheet, Modal, Alert, FlatList, Dimensions } from 'react-native'
-import { useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import Card from './Card';
+import Group from './Group';
+import { Icon } from './Icon';
+import { useForm } from '../hooks/useForm';
+import { useFocusEffect } from 'expo-router';
 import { ThemedText } from './Theme/ThemedText';
 import { ThemedView } from './Theme/ThemedView';
-import { Icon } from './Icon';
+import { errorAlert } from '../utils/errorAlert.util';
 import ThemedTextInput from './Theme/ThemedTextInput';
-import { useForm } from '../hooks/useForm';
+import useGroupStorage from '../hooks/useGroupStorage';
 import { useThemeColor } from '../hooks/useThemeColor';
-import Group from './Group';
-import { GroupProps } from '../types/Group.type';
+import { GroupProps, GroupType } from '../types/Group.type';
+import { View, StyleSheet, Modal, Alert, FlatList, Dimensions } from 'react-native'
 
 const { height } = Dimensions.get('window');
 
@@ -22,38 +25,60 @@ const baseState = {
   name: "",
 }
 
-const DATA = Array.from({ length: 10 }, (_, i) => ({
-  id: i.toString(),
-  name: `Elemento ${i + 1}`,
-}));
-
 const GroupModal = ({ visible, onClose, add }: GroupModalProps) => {
+  const [groups, setGroups] = useState<GroupType[]>([]);
+
   const { form, handleChange, handleReset } = useForm<GroupProps>(baseState);
 
   const buttonColor = useThemeColor("button");
 
+  const { onGetGroups, onSaveGroup, onRemoveGroup } = useGroupStorage();
+
+  const loadGroups = useCallback(async () => {
+    try {
+      const groupsResponse = await onGetGroups();
+      setGroups(groupsResponse);
+    } catch (error) {
+      setGroups([]);
+      console.error(error);
+    }
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      loadGroups().catch(null);
+    }, [loadGroups])
+  );
+
   const handleAddPress = async () => {
     try {
-      // TODO: Save group
-      console.log(form.name)
+      validationForm();
+      await onSaveGroup({ name: form.name }, groups)
 
-      Alert.alert("Group saved succesfully");
+      Alert.alert("Message", "Group saved succesfully");
+      loadGroups();
       handleReset();
     } catch (error) {
-      console.error(error);
+      errorAlert(error);
     }
   };
 
-  const handleRemovePress = async () => {
+  const handleRemovePress = async (id: string) => {
     try {
-      // TODO: Save group
-      console.log(form.name)
+      await onRemoveGroup(id);
 
-      Alert.alert("Group removed succesfully");
+      Alert.alert("Message", "Group removed succesfully");
+      loadGroups();
     } catch (error) {
       console.error(error);
     }
   };
+
+  const validationForm = () => {
+    if (form.name.trim().length === 0) {
+      throw new Error("Name is empty");
+    }
+  }
 
   return (
     <Modal 
@@ -100,14 +125,25 @@ const GroupModal = ({ visible, onClose, add }: GroupModalProps) => {
           <ThemedText style={styles.listTitle}>Your Groups</ThemedText>
 
           <View style={styles.listContainer}>
-            <FlatList 
-              data={DATA}
-              keyExtractor={(item) => item.id}
-              renderItem={({ item }) =>
-                <Group name={item.name} remove={() => handleRemovePress()} add={add} />
-              }
-              initialNumToRender={10}
-            />
+            {groups.length > 0 ?
+              <FlatList 
+                data={groups}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) =>
+                  <Group 
+                    name={item.name} 
+                    remove={handleRemovePress}
+                    id={item.id}
+                    add={add} 
+                  />
+                }
+                initialNumToRender={10}
+              />
+            :
+              <View style={styles.messageContainer}>
+                <ThemedText type='light'>There are no groups yet</ThemedText>
+              </View>
+            }
           </View>
 
         </ThemedView>
@@ -162,6 +198,9 @@ const styles = StyleSheet.create({
   listContainer: {
     maxHeight: height * 0.3,
     overflow: 'hidden', 
+  },
+  messageContainer: {
+    alignItems: "center"
   },
 })
 
