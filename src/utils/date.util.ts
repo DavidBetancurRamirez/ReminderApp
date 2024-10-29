@@ -1,4 +1,5 @@
-import { differenceInDays, format, parse } from "date-fns";
+import { differenceInDays, format } from "date-fns";
+
 
 export const dateAgendaFormat = "yyyy-MM-dd";
 
@@ -20,17 +21,17 @@ export const startOfDay = (date: Date | string) => {
   return newDate;
 };
 
-export const dateName = (dateString: string) => {
-  const date = parse(dateString, dateAgendaFormat, new Date());
+export const dateName = (date: Date) => {
+  const dateStartOfDay = startOfDay(date);
   const today = startOfDay(new Date());
 
   const diffDays = differenceInDays(
-    date,
+    dateStartOfDay,
     today,
   );
 
   if (diffDays === 0) return 'Today';
   else if (diffDays === -1) return 'Yesterday';
   else if (diffDays === 1) return 'Tomorrow';
-  else return dateString;
+  else return formatDate(date);
 };

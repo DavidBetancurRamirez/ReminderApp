@@ -26,7 +26,6 @@ const useReminderStorage = () => {
 
   const validateReminderProps = (reminder: ReminderProps) => {
     // Name required
-    console.log(reminder)
     if (reminder.name.trim().length === 0) {
       throw new Error("Name is empty");
     }

@@ -6,14 +6,16 @@ import { useThemeColor } from '../../hooks/useThemeColor';
 
 const TabLayout = () => {
   const backgroundColor = useThemeColor("primary");
-  const tint = useThemeColor("text");
+  const tintActive = useThemeColor("text");
+  const tintInactive = useThemeColor("textSecondary");
 
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
         tabBarStyle: { backgroundColor },
-        tabBarActiveTintColor: tint,
+        tabBarActiveTintColor: tintActive,
+        tabBarInactiveTintColor: tintInactive,
     }}>
       <Tabs.Screen
         name="index"

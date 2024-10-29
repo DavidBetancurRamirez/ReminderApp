@@ -1,10 +1,11 @@
+import { formatDateAgenda } from "./date.util";
 import { ReminderAgendaType, ReminderType } from "../types/Reminder.type";
 
 export const groupRemindersByDate = (reminders: ReminderType[]): ReminderAgendaType[] => {
   const groupedReminders: Record<string, ReminderType[]> = {};
 
   reminders.forEach((reminder) => {
-    const dateKey = reminder.date;
+    const dateKey = formatDateAgenda(reminder.startTime);
     
     if (!groupedReminders[dateKey]) {
       groupedReminders[dateKey] = [];
@@ -13,7 +14,6 @@ export const groupRemindersByDate = (reminders: ReminderType[]): ReminderAgendaT
     groupedReminders[dateKey].push(reminder);
   });
 
-  // Convierte el objeto a un array de ReminderAgendaType
   return Object.entries(groupedReminders).map(([date, data]) => ({
     title: date,
     data,

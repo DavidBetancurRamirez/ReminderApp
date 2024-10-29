@@ -45,7 +45,7 @@ export const TabBarUpgrade = ({ style, type="default", color="text", size=20, ba
 const styles = StyleSheet.create({
   upgradeButtonContainer: {
     position: 'absolute',
-    bottom: 10,
+    bottom: 0,
     width: 60,
     height: 60,
     borderRadius: 30,

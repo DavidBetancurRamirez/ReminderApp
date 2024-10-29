@@ -1,34 +1,30 @@
-import React from 'react'
-import { ThemedText } from './Theme/ThemedText';
-import { ThemedView } from './Theme/ThemedView';
-import { StyleSheet } from 'react-native';
 import Card from './Card';
 import { Icon } from './Icon';
-import { dateName } from '../utils/date.util';
+import { isSameDay } from 'date-fns';
+import { ThemedText } from './Theme/ThemedText';
+import { StyleSheet, View } from 'react-native';
 import { ReminderProps } from '../types/Reminder.type';
+import { dateName, formatTime } from '../utils/date.util';
 
 const Reminder = (reminder: ReminderProps) => {
   return (
     <Card style={styles.card}>
       <Icon name="notifications" size={30} />
 
-      <ThemedView background='card' style={styles.infoContainer}>
-        
+      <View style={styles.infoContainer}>
         <ThemedText style={styles.title}>{reminder.name}</ThemedText>
 
-        <ThemedText style={styles.group}>
-          {/* {dateName(reminder.date)} */}
-          {reminder.group && " | " + reminder.group}
+        <ThemedText style={styles.date}>
+          {dateName(reminder.startTime)}
+          {!isSameDay(reminder.startTime, reminder.endTime) && 
+            "  |  " + dateName(reminder.endTime)
+          }
         </ThemedText>
 
-        <ThemedText style={styles.info}>
-          {/* {reminder.allDay 
-            ? "All Day" 
-            : reminder.startTime + " - " + reminder.endTime
-          } */}
+        <ThemedText type='light'>
+          {formatTime(reminder.startTime)} - {formatTime(reminder.endTime)}
         </ThemedText>
-
-      </ThemedView>
+      </View>
 
       <Icon name="chevron-forward-outline" size={30} />
     </Card>
@@ -47,11 +43,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '500',
   },
-  group: {
+  date: {
     fontWeight: "300",
-  },
-  info: {
-    fontWeight: '100',
   },
 });
 
