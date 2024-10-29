@@ -1,6 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Card from '@/src/components/Card';
+import Group from '@/src/components/Group';
 import { useForm } from '../../hooks/useForm';
+import GroupModal from '@/src/components/GroupModal';
+import { errorAlert } from '@/src/utils/errorAlert.util';
+import { ReminderProps } from '@/src/types/Reminder.type';
+import useGroupStorage from '@/src/hooks/useGroupStorage';
 import { useThemeColor } from '../../hooks/useThemeColor';
 import ThemedSwitch from '../../components/Theme/ThemedSwitch';
 import { ThemedText } from '../../components/Theme/ThemedText';
@@ -8,11 +13,6 @@ import useReminderStorage from '../../hooks/useReminderStorage';
 import DateTimeSelector from '@/src/components/DateTimeSelector';
 import ThemedTextInput from '../../components/Theme/ThemedTextInput';
 import { StyleSheet, Alert, KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
-import { errorAlert } from '@/src/utils/errorAlert.util';
-import { ReminderProps } from '@/src/types/Reminder.type';
-import useGroupStorage from '@/src/hooks/useGroupStorage';
-import GroupModal from '@/src/components/GroupModal';
-import Group from '@/src/components/Group';
 
 const baseState: ReminderProps = {
   name: "",
@@ -143,15 +143,17 @@ const ManualReminderScreen = () => {
           </>
         )}
 
-        <Card 
-          style={[
-            { backgroundColor: buttonColor }, 
-            styles.button
-          ]}
-          onPress={handleSave}
-        >
-          <ThemedText>Save Reminder</ThemedText>
-        </Card>
+        <View style={styles.endSpace}>
+          <Card 
+            style={[
+              { backgroundColor: buttonColor }, 
+              styles.button
+            ]}
+            onPress={handleSave}
+          >
+            <ThemedText>Save Reminder</ThemedText>
+          </Card>
+        </View>
         
         <GroupModal 
           visible={groupModalVisible} 
@@ -194,8 +196,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15
   }, 
   button: {
-    marginVertical: 20,
-    justifyContent: "center"
+    justifyContent: "center",
+  },
+  endSpace: {
+    marginTop: 20,
+    marginBottom: 80
   }
 });
 

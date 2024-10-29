@@ -1,15 +1,32 @@
+import useReminderStorage from '@/src/hooks/useReminderStorage';
 import { ThemedText } from '../../components/Theme/ThemedText';
 import { ThemedView } from '../../components/Theme/ThemedView';
 import ThemeToggleButton from '../../components/Theme/ThemeToggleButton';
 import React from 'react'
-import { StyleSheet } from 'react-native';
+import { Alert, Button, StyleSheet } from 'react-native';
+import { errorAlert } from '@/src/utils/errorAlert.util';
 
 const Profile = () => {  
+  const { deleteReminders } = useReminderStorage();
+
+  const handlePress = () => {
+    try {
+      deleteReminders();
+  
+      Alert.alert("Message", "Reminders eliminados");      
+    } catch (error) {
+      errorAlert(error)
+    }
+  }
+
   return (
-    <ThemedView style={styles.titleContainer}>
-      <ThemedText type="title">Profile!</ThemedText>
-      <ThemeToggleButton />
-    </ThemedView>
+    <>
+      <ThemedView style={styles.titleContainer}>
+        <ThemedText type="title">Profile!</ThemedText>
+        <ThemeToggleButton />
+      </ThemedView>
+      <Button title='Eliminar reminders' onPress={handlePress} />
+    </>
   )
 }
 
