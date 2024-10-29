@@ -1,65 +1,51 @@
-import React from 'react'
-import { ThemedText } from '@/src/components/ThemedText';
-import { ThemedView } from '@/src/components/ThemedView';
-import { StyleSheet } from 'react-native';
-import Card from '@/src/components/Card';
+import Card from './Card';
 import { Icon } from './Icon';
+import { isSameDay } from 'date-fns';
+import { ThemedText } from './Theme/ThemedText';
+import { StyleSheet, View } from 'react-native';
+import { ReminderProps } from '../types/Reminder.type';
+import { dateName, formatTime } from '../utils/date.util';
 
-interface ReminderProps {
-  name: string;
-  date: string;
-  hour: string;
-  group?: string;
-}
-
-const Reminder = ({ name, date, hour, group }: ReminderProps) => {
+const Reminder = (reminder: ReminderProps) => {
   return (
-    <Card>
-      <Icon name="notifications" size={30} style={styles.icon} />
+    <Card style={styles.card}>
+      <Icon name="notifications" size={30} />
 
-      <ThemedView background='card' style={styles.infoContainer}>
-        <ThemedText style={styles.title}>{name}</ThemedText>
-        <ThemedText style={styles.info}>
-            {formatDate(date)} | {hour}
+      <View style={styles.infoContainer}>
+        <ThemedText style={styles.title}>{reminder.name}</ThemedText>
+
+        <ThemedText style={styles.date}>
+          {dateName(reminder.startTime)}
+          {!isSameDay(reminder.startTime, reminder.endTime) && 
+            "  |  " + dateName(reminder.endTime)
+          }
         </ThemedText>
-      </ThemedView>
 
-      <Icon name="chevron-forward-outline" size={30} style={styles.icon} />
+        <ThemedText type='light'>
+          {formatTime(reminder.startTime)} - {formatTime(reminder.endTime)}
+        </ThemedText>
+      </View>
+
+      <Icon name="chevron-forward-outline" size={30} />
     </Card>
   )
 }
 
-const formatDate = (dateString: string) => {
-  const today = new Date();
-  const date = new Date(dateString);
-
-  // Ajustar la hora a medianoche para comparar solo fechas
-  today.setHours(0, 0, 0, 0);
-  date.setHours(0, 0, 0, 0);
-
-  const diffTime = date.getTime() - today.getTime();
-  const diffDays = diffTime / (1000 * 60 * 60 * 24);
-
-  if (diffDays === -1) return 'Today';
-  else if (diffDays === -2) return 'Yesterday';
-  else if (diffDays === 0) return 'Tomorrow';
-  else return dateString;
-};
-
 const styles = StyleSheet.create({
-    icon: {
-      margin: 10,
-    },
-    infoContainer: {
-      flex: 1,
-    },
-    title: {
-      fontSize: 18,
-      fontWeight: 'bold',
-    },
-    info: {
-      fontWeight: '100',
-    },
-  });
+  card: {
+    margin: 10,
+  },
+  infoContainer: {
+    flex: 1,
+    marginHorizontal: 10,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: '500',
+  },
+  date: {
+    fontWeight: "300",
+  },
+});
 
 export default Reminder;

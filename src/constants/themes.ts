@@ -11,6 +11,7 @@ export type CustomTheme = Theme & {
     border: string;
     button: string;
     buttonHover: string;
+    danger: string;
   };
 };
 
@@ -26,6 +27,7 @@ export const DarkTheme: CustomTheme = {
     border: '#2E2E2E',
     button: '#2E7D4B',
     buttonHover: '#1D6A40',
+    danger: '#D32F2F',
   },
 };
 
@@ -35,11 +37,12 @@ export const LightTheme: CustomTheme = {
     ...NavigationDefaultTheme.colors,
     primary: '#2E7D4B',
     background: '#F2F2F2',
-    card: '#FFFFFF',
-    text: '#3C3C3C',
-    textSecondary: '#000000',
+    card: '#D6D6D6',
+    text: '#141414',
+    textSecondary: '#3C3C3C',
     border: '#DADADA',
     button: '#2E7D4B',
     buttonHover: '#1D6A40',
+    danger: '#D32F2F',
   },
 };

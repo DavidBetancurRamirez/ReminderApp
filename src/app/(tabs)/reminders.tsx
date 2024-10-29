@@ -1,5 +1,5 @@
 import React from 'react'
-import Agenda from '@/src/components/Agenda';
+import Agenda from '../../components/Agenda';
 
 const Reminders = () => {
   return (

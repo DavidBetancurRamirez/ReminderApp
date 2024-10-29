@@ -1,29 +1,37 @@
-import React, { useCallback, useState } from 'react';
-import { ExpandableCalendar, CalendarProvider, AgendaList } from 'react-native-calendars';
+import { useCallback, useMemo, useState } from 'react';
 import Reminder from './Reminder';
-import { useThemeColor } from '../hooks/useThemeColor';
-import ITEMS from '@/src/data/reminders'
 import { StyleSheet } from 'react-native';
-
-interface AgendaItem {
-  name: string;
-  hour: string;
-  group?: string;
-}
-
-interface AgendaData {
-  title: string;
-  data: AgendaItem[];
-}
-
-interface PropsAgendaItem {
-  item: AgendaItem;
-  date: string;
-}
+import { useFocusEffect } from 'expo-router';
+import { errorAlert } from '../utils/errorAlert.util';
+import { useThemeColor } from '../hooks/useThemeColor';
+import { ReminderAgendaType } from '../types/Reminder.type';
+import useReminderStorage from '../hooks/useReminderStorage';
+import { groupRemindersByDate } from '../utils/groupRemindersByDate.util';
+import { ExpandableCalendar, CalendarProvider, AgendaList } from 'react-native-calendars';
 
 const Agenda = () => {
   const today = new Date().toISOString().split('T')[0];
   const [selectedDate, setSelectedDate] = useState(today);
+  const [reminders, setReminders] = useState<ReminderAgendaType[]>([]);
+
+  const { onGetReminders } = useReminderStorage();  
+
+  const loadReminders = useCallback(async () => {
+    try {
+      const remindersResponse = await onGetReminders();
+      const remindersGrouped = groupRemindersByDate(remindersResponse);
+      setReminders(remindersGrouped);
+    } catch (error) {
+      setReminders([]);
+      errorAlert(error)
+    }
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      loadReminders().catch(null);
+    }, [loadReminders])
+  );
 
   // Colors
   const backgroundColor = useThemeColor("background");
@@ -32,13 +40,25 @@ const Agenda = () => {
   const card = useThemeColor("card");
   const styles = createStyles(backgroundColor, textColor);
 
+  const calendarTheme = useMemo(() => ({
+    backgroundColor: card,
+    calendarBackground: card,
+    textSectionTitleColor: primaryColor,
+    selectedDayBackgroundColor: primaryColor,
+    selectedDayTextColor: textColor,
+    todayTextColor: primaryColor,
+    dayTextColor: textColor,
+    textDisabledColor: backgroundColor,
+    dotColor: primaryColor,
+    selectedDotColor: textColor,
+    arrowColor: primaryColor,
+    monthTextColor: textColor,
+    indicatorColor: primaryColor,
+  }), [card, primaryColor, textColor, backgroundColor]);
+
   const onDateChanged = useCallback((date: any) => {
     setSelectedDate(date);
   }, []);
-
-  const renderItem = useCallback(({item, date}: PropsAgendaItem) => (
-    <Reminder name={item.name} date={date} hour={item.hour} />
-  ), []);
 
   return (
     <CalendarProvider 
@@ -46,29 +66,20 @@ const Agenda = () => {
       onDateChanged={onDateChanged}
     >
       <ExpandableCalendar
+        key={`${card}-${primaryColor}`}
         firstDay={1}
         markedDates={{ [selectedDate]: { selected: true } }}
-        theme={{
-          backgroundColor: card,
-          calendarBackground: card,
-          textSectionTitleColor: primaryColor,
-          selectedDayBackgroundColor: primaryColor,
-          selectedDayTextColor: textColor,
-          todayTextColor: primaryColor,
-          dayTextColor: textColor,
-          textDisabledColor: backgroundColor,
-          dotColor: primaryColor,
-          selectedDotColor: textColor,
-          arrowColor: primaryColor,
-          monthTextColor: textColor,
-          indicatorColor: primaryColor
-        }}
+        theme={calendarTheme}
       />
       <AgendaList
-        sections={ITEMS}
-        renderItem={({ item, section }) => renderItem({ item, date: section.title})}
+        sections={reminders}
+        renderItem={({ item }) => (
+          <Reminder 
+            {...item}
+          />
+        )}
         sectionStyle={styles.section}
-        keyExtractor={(item, index) => item.name + index}
+        keyExtractor={(item) => item.id}
       />
     </CalendarProvider>
   );

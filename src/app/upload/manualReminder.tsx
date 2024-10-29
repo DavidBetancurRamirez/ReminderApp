@@ -1,94 +1,201 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Switch, Button, StyleSheet } from 'react-native';
+import { useEffect, useState } from 'react';
+import Card from '@/src/components/Card';
+import { useForm } from '../../hooks/useForm';
+import { useThemeColor } from '../../hooks/useThemeColor';
+import ThemedSwitch from '../../components/Theme/ThemedSwitch';
+import { ThemedText } from '../../components/Theme/ThemedText';
+import useReminderStorage from '../../hooks/useReminderStorage';
+import DateTimeSelector from '@/src/components/DateTimeSelector';
+import ThemedTextInput from '../../components/Theme/ThemedTextInput';
+import { StyleSheet, Alert, KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
+import { errorAlert } from '@/src/utils/errorAlert.util';
+import { ReminderProps } from '@/src/types/Reminder.type';
+import useGroupStorage from '@/src/hooks/useGroupStorage';
+import GroupModal from '@/src/components/GroupModal';
+import Group from '@/src/components/Group';
+
+const baseState: ReminderProps = {
+  name: "",
+  location: "",
+  description: "",
+  group: undefined,
+  startTime: new Date(),
+  endTime: new Date(),
+}
 
 const ManualReminderScreen = () => {
-  const [title, setTitle] = useState('');
-  const [location, setLocation] = useState('');
-  const [isAllDay, setIsAllDay] = useState(false);
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
+  const [details, setDetails] = useState(false);
+  const [groupModalVisible, setGroupModalVisible] = useState(false);
+
+  const { form, handleChange, handleReset } = useForm<ReminderProps>(baseState);
+
+  const buttonColor = useThemeColor("button");
+
+  const { onSaveReminder } = useReminderStorage();
+  const { onGetGroup } = useGroupStorage();
+
+  const handleSave = async () => {
+    try {
+      await onSaveReminder(form);
+
+      Alert.alert("Message", "Reminder saved succesfully");
+  
+      handleReset();
+    } catch (error) {
+      errorAlert(error);
+    }
+  };
+
+  const handleRemoveGroup = () => {
+    handleChange({ key: 'group', value: undefined });
+  }
+  
+  const handleSelectGroup = async (id: string) => {
+    try {
+      const group = await onGetGroup(id);
+
+      handleChange({ key: 'group', value: group });
+
+      handleGroupModalClose();
+    } catch (error) {
+      errorAlert(error);      
+    }
+  }
+
+  const handleGroupModalClose = async () => {
+    setGroupModalVisible(false);
+  }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>New Reminder</Text>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={{ flex: 1 }}
+    >
+      <ScrollView style={styles.container}>
+        <ThemedText style={styles.title}>New Reminder</ThemedText>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Title"
-        placeholderTextColor="#aaa"
-        value={title}
-        onChangeText={setTitle}
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="Location or Link"
-        placeholderTextColor="#aaa"
-        value={location}
-        onChangeText={setLocation}
-      />
-
-      <View style={styles.switchContainer}>
-        <Text style={styles.switchLabel}>All day</Text>
-        <Switch 
-          value={isAllDay} 
-          onValueChange={setIsAllDay} 
-          trackColor={{ false: "#767577", true: "#81b0ff" }}
-          thumbColor={isAllDay ? "#f5dd4b" : "#f4f3f4"}
+        <ThemedTextInput 
+          keyName="name"
+          form={form} 
+          setValue={handleChange} 
         />
-      </View>
 
-      {!isAllDay && (
-        <>
-          <TextInput
-            style={styles.input}
-            placeholder="Starts"
-            placeholderTextColor="#aaa"
-            value={startTime}
-            onChangeText={setStartTime}
+        <View style={styles.dateContainer}>
+          <DateTimeSelector
+            title="Start"
+            keyName="startTime"
+            date={form.startTime}
+            setDate={handleChange}
           />
-          <TextInput
-            style={styles.input}
-            placeholder="Ends"
-            placeholderTextColor="#aaa"
-            value={endTime}
-            onChangeText={setEndTime}
-          />
-        </>
-      )}
 
-      <Button title="Save Reminder" onPress={() => {/* Handle save */}} />
-    </View>
+          <DateTimeSelector
+            title="End"
+            keyName="endTime"
+            date={form.endTime}
+            minimumDate={form.startTime}
+            setDate={handleChange}
+          />
+        </View>
+
+        <ThemedSwitch 
+          text="Add details"
+          enabled= {details}
+          value={details}
+          onValueChange={() => setDetails(!details)}
+        />
+
+        {details && (
+          <>
+            <View style={styles.groupContainer}>
+              <View style={styles.groupContent}>
+                {form.group ?
+                  <Group 
+                    {...form.group}
+                    remove={handleRemoveGroup} 
+                    style={styles.group}
+                  />
+                :
+                  <ThemedText>No group selected</ThemedText>
+                }
+              </View>
+              <Card 
+                onPress={() => setGroupModalVisible(true)}
+                style={styles.groupButton}
+              >
+                <ThemedText>{form.group ? "Change" : "Select"} group</ThemedText>
+              </Card>
+            </View>
+
+            <ThemedTextInput 
+              keyName="location" 
+              form={form} 
+              setValue={handleChange} 
+            />
+    
+            <ThemedTextInput 
+              keyName="description" 
+              form={form} 
+              setValue={handleChange} 
+              multiline={true}
+              numberOfLines={3}
+              textAlignVertical="top"
+            />
+          </>
+        )}
+
+        <Card 
+          style={[
+            { backgroundColor: buttonColor }, 
+            styles.button
+          ]}
+          onPress={handleSave}
+        >
+          <ThemedText>Save Reminder</ThemedText>
+        </Card>
+        
+        <GroupModal 
+          visible={groupModalVisible} 
+          onClose={handleGroupModalClose} 
+          select={handleSelectGroup} 
+        />
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#1c1c1c',
+    padding: 16,
   },
   title: {
-    color: 'white',
     fontSize: 20,
-    marginBottom: 20,
+    fontWeight: "bold",
+    textAlign: "center"
   },
-  input: {
-    backgroundColor: '#2b2b2b',
-    color: 'white',
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 20,
+  dateContainer: {
+    flexDirection: "row",
   },
-  switchContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
+  groupContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 5,
+    alignItems: "center",
   },
-  switchLabel: {
-    color: 'white',
-    fontSize: 16,
+  groupContent: {
+    flex: 1,
+    marginRight: 15
+  },
+  group: {
+    marginBottom: 0,
+    padding: 8,
+  },
+  groupButton: {
+    paddingHorizontal: 15
+  }, 
+  button: {
+    marginVertical: 20,
+    justifyContent: "center"
   }
 });
 

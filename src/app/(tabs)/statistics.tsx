@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 
-import { ThemedText } from '@/src/components/ThemedText';
-import { ThemedView } from '@/src/components/ThemedView';
+import { ThemedText } from '../../components/Theme/ThemedText';
+import { ThemedView } from '../../components/Theme/ThemedView';
 
 const Statistics = () => {
   return (
