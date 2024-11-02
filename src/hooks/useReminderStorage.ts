@@ -31,11 +31,17 @@ const useReminderStorage = () => {
     }
   }
 
+  const deleteReminders = async () => {
+    const key = getEnvKey(keyName);
+    await removeItem<ReminderType>(key, () => true)
+  }
+
   return {
     onGetReminders,
     onSaveReminder,
     onRemoveReminder,
-    validateReminderProps
+    validateReminderProps,
+    deleteReminders
   }
 };
 

@@ -1,11 +1,5 @@
 import { GroupType } from "./Group.type";
 
-export type BaseReminderProps = {
-  name: string;
-  date: string;
-  group?: string;
-};
-
 export type ReminderProps = {
   name: string;
   startTime: Date;
@@ -16,7 +10,7 @@ export type ReminderProps = {
 }
 
 export type ReminderType = ReminderProps & {
-  id: string | number[];
+  id: string;
 }
 
 export type ReminderAgendaType = {

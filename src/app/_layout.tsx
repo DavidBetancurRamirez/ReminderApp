@@ -1,16 +1,14 @@
-import * as SplashScreen from 'expo-splash-screen';
-import React, { useEffect } from 'react';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
 import 'react-native-reanimated';
-import { StatusBar } from 'react-native';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { Stack } from 'expo-router';
+import { useFonts } from 'expo-font';
+import React, { useEffect } from 'react';
+import * as SplashScreen from 'expo-splash-screen';
+import { Platform, StatusBar } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { NavigationContainer } from '@react-navigation/native';
 
-import { ThemeProvider, useTheme } from '../context/ThemeContext';
-import { DarkTheme, LightTheme } from '../constants/themes';
 import { useThemeColor } from '../hooks/useThemeColor';
+import { ThemeProvider, useTheme } from '../context/ThemeContext';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -31,34 +29,32 @@ export default function App() {
   return (
     <ThemeProvider>
       <SafeAreaProvider>
-        <SafeAreaView style={{flex:1}}>
-          <GestureHandlerRootView style={{ flex: 1 }}>
-            <Container />
-          </GestureHandlerRootView>
-        </SafeAreaView>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <Navigation />
+        </GestureHandlerRootView>
       </SafeAreaProvider>
     </ThemeProvider>
   );
 }
 
-const Container = () => {
+const Navigation = () => {
   const { theme } = useTheme();
-  const navigationTheme = theme === 'dark' ? DarkTheme : LightTheme;
-  const background = useThemeColor("background")
+  const background = useThemeColor("background");
 
   useEffect(() => {
-    const barStyle = theme === 'dark' ? 'light-content' : 'dark-content';
-    StatusBar.setBarStyle(barStyle, true);
-    StatusBar.setBackgroundColor(background);
-    StatusBar.setTranslucent(true);
+    if (Platform.OS === 'android') {
+      StatusBar.setBackgroundColor(background);
+      StatusBar.setTranslucent(true);
+    }
   }, [theme]);
 
   return (
-    <NavigationContainer theme={navigationTheme} independent={true}>
+    <>
+      <StatusBar barStyle={theme === 'dark' ? 'light-content' : 'dark-content'} />
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
-    </NavigationContainer>
+    </>
   )
 }

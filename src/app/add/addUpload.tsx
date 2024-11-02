@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
 
-const UploadCSVScreen = () => {
+const AddUpload = () => {
   const handleCSVUpload = async () => {
     try {
       let result = await DocumentPicker.getDocumentAsync({ type: 'text/csv' });
@@ -55,4 +55,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default UploadCSVScreen;
+export default AddUpload;

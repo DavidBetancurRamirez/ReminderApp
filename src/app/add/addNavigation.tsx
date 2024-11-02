@@ -4,14 +4,14 @@ import { Icon } from "../../components/Icon";
 import { ThemedText } from "../../components/Theme/ThemedText";
 import { ThemedView } from "../../components/Theme/ThemedView";
 
-const Upload = ({ navigation }: any) => {
+const AddNavigation = ({ navigation }: any) => {
   return (
     <ThemedView style={styles.container}>
       <ThemedText type="subtitle">Select how to upload your reminders</ThemedText>
       
       <Card 
         style={styles.option}
-        onPress={() => navigation.navigate('ManualReminder')}
+        onPress={() => navigation.navigate('AddReminder')}
       >
         <Icon name='create-sharp' size={80} style={styles.icon} />
         <ThemedText type='subtitle'>Form</ThemedText>
@@ -19,7 +19,7 @@ const Upload = ({ navigation }: any) => {
 
       <Card 
         style={styles.option}
-        onPress={() => navigation.navigate('UploadCSV')}
+        onPress={() => navigation.navigate('AddUpload')}
       >
         <Icon name='file-tray-full' size={80} style={styles.icon} />
         <ThemedText type='subtitle'>Upload a CSV file</ThemedText>
@@ -47,4 +47,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Upload;
+export default AddNavigation;

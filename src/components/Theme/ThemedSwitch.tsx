@@ -1,8 +1,7 @@
-import { StyleSheet, Switch, SwitchProps } from 'react-native'
-import React from 'react'
 import { ThemedView } from './ThemedView'
 import { ThemedText } from './ThemedText'
-import { useThemeColor } from '@/src/hooks/useThemeColor';
+import { useThemeColor } from '../..//hooks/useThemeColor';
+import { StyleSheet, Switch, SwitchProps } from 'react-native';
 
 type ThemedSwitchProps = SwitchProps & {
   text: string;
@@ -32,6 +31,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginVertical: 10
   },
   switchLabel: {
     fontSize: 16,

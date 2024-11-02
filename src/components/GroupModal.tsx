@@ -102,14 +102,16 @@ const GroupModal = ({ visible, onClose, select }: GroupModalProps) => {
                 setValue={handleChange}
               />
             </View>
-            <Card style={[
-              { backgroundColor: buttonColor }, 
-              styles.buttonContainer
-            ]}>
+            <Card 
+              style={[
+                { backgroundColor: buttonColor }, 
+                styles.buttonContainer
+              ]}
+              onPress={handleAddPress}
+            >
               <Icon 
                 name='add' 
-                size={25} 
-                onPress={handleAddPress}
+                size={25}
               />
             </Card>
           </View>
