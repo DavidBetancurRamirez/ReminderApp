@@ -41,7 +41,7 @@ const ThemedTextInput = <T extends object>({ keyName, title, setValue, form, ...
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 8
+    marginVertical: 10
   },
   input: {
     paddingVertical: 5,

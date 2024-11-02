@@ -1,16 +1,16 @@
 import { useState } from 'react';
-import Card from '@/src/components/Card';
-import Group from '@/src/components/Group';
+import Card from '../../components/Card';
+import Group from '../../components/Group';
 import { useForm } from '../../hooks/useForm';
-import GroupModal from '@/src/components/GroupModal';
-import { errorAlert } from '@/src/utils/errorAlert.util';
-import { ReminderProps } from '@/src/types/Reminder.type';
-import useGroupStorage from '@/src/hooks/useGroupStorage';
+import GroupModal from '../../components/GroupModal';
+import { errorAlert } from '../../utils/errorAlert.util';
+import { ReminderProps } from '../../types/Reminder.type';
+import useGroupStorage from '../../hooks/useGroupStorage';
 import { useThemeColor } from '../../hooks/useThemeColor';
 import ThemedSwitch from '../../components/Theme/ThemedSwitch';
 import { ThemedText } from '../../components/Theme/ThemedText';
 import useReminderStorage from '../../hooks/useReminderStorage';
-import DateTimeSelector from '@/src/components/DateTimeSelector';
+import DateTimeSelector from '../../components/DateTimeSelector';
 import ThemedTextInput from '../../components/Theme/ThemedTextInput';
 import { StyleSheet, Alert, KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
 
@@ -23,13 +23,14 @@ const baseState: ReminderProps = {
   endTime: new Date(),
 }
 
-const ManualReminderScreen = () => {
+const AddReminder = () => {
   const [details, setDetails] = useState(false);
   const [groupModalVisible, setGroupModalVisible] = useState(false);
 
   const { form, handleChange, handleReset } = useForm<ReminderProps>(baseState);
 
   const buttonColor = useThemeColor("button");
+  const backgroundColor = useThemeColor("background");
 
   const { onSaveReminder } = useReminderStorage();
   const { onGetGroup } = useGroupStorage();
@@ -71,7 +72,7 @@ const ManualReminderScreen = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{ flex: 1 }}
     >
-      <ScrollView style={styles.container}>
+      <ScrollView style={[{ backgroundColor }, styles.container]}>
         <ThemedText style={styles.title}>New Reminder</ThemedText>
 
         <ThemedTextInput 
@@ -177,11 +178,11 @@ const styles = StyleSheet.create({
   },
   dateContainer: {
     flexDirection: "row",
+    marginVertical: 5
   },
   groupContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 5,
     alignItems: "center",
   },
   groupContent: {
@@ -204,4 +205,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default ManualReminderScreen;
+export default AddReminder;

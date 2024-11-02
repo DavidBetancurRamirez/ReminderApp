@@ -1,8 +1,6 @@
 import { Tabs } from 'expo-router';
-import React from 'react';
-
-import { Icon, TabBarUpgrade } from '../../components/Icon';
 import { useThemeColor } from '../../hooks/useThemeColor';
+import { Icon, TabBarUpgrade } from '../../components/Icon';
 
 const TabLayout = () => {
   const backgroundColor = useThemeColor("primary");
@@ -36,7 +34,7 @@ const TabLayout = () => {
         }}
       />
       <Tabs.Screen
-        name="upgrade"
+        name="add"
         options={{
           title: "",
           tabBarIcon: ({ focused }) => (

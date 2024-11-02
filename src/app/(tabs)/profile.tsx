@@ -1,10 +1,10 @@
-import useReminderStorage from '@/src/hooks/useReminderStorage';
-import { ThemedText } from '../../components/Theme/ThemedText';
-import { ThemedView } from '../../components/Theme/ThemedView';
-import ThemeToggleButton from '../../components/Theme/ThemeToggleButton';
-import React from 'react'
 import { Alert, Button, StyleSheet } from 'react-native';
 import { errorAlert } from '@/src/utils/errorAlert.util';
+import ViewContainer from '@/src/components/ViewContainer';
+import { ThemedText } from '../../components/Theme/ThemedText';
+import { ThemedView } from '../../components/Theme/ThemedView';
+import useReminderStorage from '@/src/hooks/useReminderStorage';
+import ThemeToggleButton from '../../components/Theme/ThemeToggleButton';
 
 const Profile = () => {  
   const { deleteReminders } = useReminderStorage();
@@ -13,20 +13,20 @@ const Profile = () => {
     try {
       deleteReminders();
   
-      Alert.alert("Message", "Reminders eliminados");      
+      Alert.alert("Message", "Reminders deleted");      
     } catch (error) {
       errorAlert(error)
     }
   }
 
   return (
-    <>
+    <ViewContainer>
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Profile!</ThemedText>
         <ThemeToggleButton />
       </ThemedView>
       <Button title='Eliminar reminders' onPress={handlePress} />
-    </>
+    </ViewContainer>
   )
 }
 

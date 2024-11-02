@@ -1,9 +1,11 @@
-import React from 'react'
 import Agenda from '../../components/Agenda';
+import ViewContainer from '@/src/components/ViewContainer';
 
 const Reminders = () => {
   return (
-    <Agenda />
+    <ViewContainer>
+      <Agenda />
+    </ViewContainer>
   )
 }
 
