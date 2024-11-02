@@ -11,8 +11,9 @@ import ThemedSwitch from '../../components/Theme/ThemedSwitch';
 import { ThemedText } from '../../components/Theme/ThemedText';
 import useReminderStorage from '../../hooks/useReminderStorage';
 import DateTimeSelector from '../../components/DateTimeSelector';
+import { StyleSheet, Alert, ScrollView, View } from 'react-native';
 import ThemedTextInput from '../../components/Theme/ThemedTextInput';
-import { StyleSheet, Alert, KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const baseState: ReminderProps = {
   name: "",
@@ -68,11 +69,10 @@ const AddReminder = () => {
   }
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{ flex: 1 }}
+    <KeyboardAwareScrollView
+      contentContainerStyle={{ flex: 1, backgroundColor }}
     >
-      <ScrollView style={[{ backgroundColor }, styles.container]}>
+      <ScrollView style={styles.container}>
         <ThemedText style={styles.title}>New Reminder</ThemedText>
 
         <ThemedTextInput 
@@ -162,7 +162,7 @@ const AddReminder = () => {
           select={handleSelectGroup} 
         />
       </ScrollView>
-    </KeyboardAvoidingView>
+    </KeyboardAwareScrollView>
   );
 };
 

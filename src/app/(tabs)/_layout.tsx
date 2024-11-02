@@ -8,12 +8,12 @@ const TabLayout = () => {
   const tintInactive = useThemeColor("textSecondary");
 
   return (
-    <Tabs
-      screenOptions={{
-        headerShown: false,
-        tabBarStyle: { backgroundColor },
-        tabBarActiveTintColor: tintActive,
-        tabBarInactiveTintColor: tintInactive,
+    <Tabs screenOptions={{
+      headerShown: false,
+      tabBarStyle: { backgroundColor },
+      tabBarActiveTintColor: tintActive,
+      tabBarInactiveTintColor: tintInactive,
+      tabBarHideOnKeyboard: true
     }}>
       <Tabs.Screen
         name="index"
